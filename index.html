@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-PMFS · AI Persona Mental Forcing Simulator — 손재완</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" id="theme">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard+Variable:wght@300..900&family=JetBrains+Mono:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --r-main-font: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --r-heading-font: 'Pretendard Variable', sans-serif;
+    --r-serif-font: 'Cormorant Garamond', 'Pretendard Variable', serif;
+    --r-code-font: 'JetBrains Mono', monospace;
+    --r-main-color: #d8d8dc;
+    --r-heading-color: #ffffff;
+    --r-background-color: #0a0d14;
+    --r-link-color: #f4c97a;
+    --bg-deep: #0a0d14;
+    --bg-elev: #131722;
+    --bg-elev2: #1c2230;
+    --accent-gold: #f4c97a;
+    --accent-blue: #6ea8e0;
+    --accent-red: #e57373;
+    --accent-green: #81c784;
+    --border-subtle: #2a3142;
+  }
+  html, body { background: var(--bg-deep); }
+  .reveal { font-family: var(--r-main-font); font-size: 38px; color: var(--r-main-color); }
+  .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: var(--r-heading-font);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.025em;
+    color: var(--r-heading-color);
+  }
+  .reveal h1 { font-size: 1.9em; line-height: 1.1; }
+  .reveal h2 {
+    font-size: 1.35em;
+    color: var(--accent-gold);
+    margin-bottom: 0.3em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .reveal h3 { font-size: 1.0em; color: var(--accent-blue); margin-top: 0.5em; }
+  .reveal p, .reveal li { line-height: 1.55; }
+  .subtitle { color: #8a93a6; font-size: 0.75em; margin-top: -0.3em; }
+  .author-block {
+    margin-top: 28px;
+    padding: 16px 22px;
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--accent-gold);
+    display: inline-block;
+    text-align: left;
+  }
+  .author-block .name { font-size: 0.85em; color: var(--r-heading-color); font-weight: 600; }
+  .author-block .affil { font-size: 0.65em; color: #aab1c0; margin-top: 4px; font-family: var(--r-serif-font); font-style: italic; }
+  .suits { font-size: 1.6em; letter-spacing: 0.35em; opacity: 0.85; }
+  .suit-red { color: #e57373; }
+  .red { color: var(--accent-red); }
+  .gold { color: var(--accent-gold); }
+  .blue { color: var(--accent-blue); }
+  .green { color: var(--accent-green); }
+  .muted { color: #8a93a6; }
+  .small { font-size: 0.75em; color: #aab1c0; }
+  .xsmall { font-size: 0.65em; color: #8a93a6; }
+
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 999px;
+    background: var(--accent-gold); color: #1a1a1a; font-weight: 700; font-size: 0.72em;
+    margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em;
+  }
+
+  .reveal table { font-size: 0.72em; margin: 0 auto; border-collapse: collapse; background: var(--bg-elev); border-radius: 8px; overflow: hidden; }
+  .reveal table th {
+    background: var(--bg-elev2); color: var(--accent-gold);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 8px 14px; font-weight: 600; text-align: left;
+  }
+  .reveal table td { border-bottom: 1px solid var(--border-subtle); padding: 7px 14px; }
+  .reveal table tr:last-child td { border-bottom: none; }
+  .reveal table tr:hover td { background: rgba(244,201,122,0.04); }
+
+  .reveal pre { box-shadow: none; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 8px; }
+  .reveal pre code { padding: 16px 20px; font-size: 0.78em; line-height: 1.6; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+  .stat-card {
+    background: var(--bg-elev); border-left: 3px solid var(--accent-gold);
+    padding: 14px 16px; border-radius: 6px;
+  }
+  .stat-card .label { font-size: 0.68em; color: #8a93a6; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; }
+  .stat-card .value { font-size: 1.1em; font-weight: 700; color: var(--accent-gold); margin-top: 4px; }
+
+  .pipeline {
+    display: flex; justify-content: space-between; margin-top: 22px; gap: 8px;
+  }
+  .pipeline .step {
+    flex: 1; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 8px;
+    padding: 12px 8px; text-align: center; font-size: 0.72em;
+  }
+  .pipeline .step .num { color: var(--accent-gold); font-size: 1.3em; font-weight: 700; }
+  .pipeline .arrow { display: flex; align-items: center; color: var(--accent-gold); font-size: 1.3em; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .quote {
+    border-left: 3px solid var(--accent-gold);
+    padding: 14px 22px;
+    background: rgba(244,201,122,0.05);
+    color: #d8d8dc;
+    margin: 18px 0;
+    font-size: 0.78em;
+    font-family: var(--r-serif-font);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .key-finding {
+    background: linear-gradient(135deg, var(--bg-elev), rgba(229,115,115,0.08));
+    border: 1px solid rgba(229,115,115,0.4);
+    border-radius: 10px; padding: 14px 22px; margin: 16px 0;
+    font-size: 0.78em;
+  }
+  .key-finding strong { color: var(--accent-gold); }
+
+  .glossary {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 22px;
+    text-align: left;
+    font-size: 0.65em;
+  }
+  .glossary h4 {
+    color: var(--accent-blue);
+    font-size: 1em;
+    margin: 0 0 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .glossary dl { margin: 0; }
+  .glossary dt { color: var(--accent-gold); font-weight: 700; margin-top: 8px; }
+  .glossary dt:first-of-type { margin-top: 0; }
+  .glossary dd { margin: 3px 0 0 0; color: #c2c8d4; line-height: 1.5; }
+
+  .reveal .progress { color: var(--accent-gold); height: 3px; }
+
+  .footer {
+    position: fixed; bottom: 14px; left: 24px; right: 24px;
+    font-size: 0.65em; color: #5a6275; z-index: 10;
+    display: flex; justify-content: space-between; pointer-events: none;
+  }
+  .footer span { pointer-events: auto; }
+  .footer a { color: var(--accent-gold); text-decoration: none; }
+
+  .formula {
+    font-family: var(--r-code-font);
+    background: var(--bg-elev); padding: 8px 14px; border-radius: 6px;
+    display: inline-block; color: var(--accent-blue); font-size: 0.85em;
+  }
+  ul.compact li { margin: 3px 0; }
+  ul.tight li { margin: 1px 0; }
+
+  .annot {
+    background: var(--bg-elev);
+    border-left: 3px solid var(--accent-blue);
+    padding: 12px 18px;
+    margin: 14px 0 0;
+    font-size: 0.7em;
+    color: #c2c8d4;
+    text-align: left;
+    border-radius: 0 6px 6px 0;
+    line-height: 1.6;
+  }
+  .annot strong { color: var(--accent-blue); }
+
+  .legend {
+    display: flex; gap: 18px; justify-content: center; margin-top: 10px;
+    font-size: 0.7em; color: #8a93a6;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .corner-mark {
+    position: absolute;
+    top: 18px; right: 26px;
+    font-size: 0.65em;
+    color: #5a6275;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .label-strong {
+    font-size: 0.72em;
+    color: var(--accent-gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .divider { height: 1px; background: var(--border-subtle); margin: 14px 0; }
+
+  /* Cover specific */
+  .cover {
+    text-align: center;
+    background: radial-gradient(ellipse at center, rgba(244,201,122,0.06) 0%, transparent 60%), var(--bg-deep);
+  }
+  .cover .meta {
+    margin-top: 30px;
+    font-size: 0.72em;
+    color: #8a93a6;
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+<div class="footer">
+  <span>A-PMFS · 손재완 (연세대학교 융합인문공학과)</span>
+  <span><a href="https://github.com/wukong-daima/A-PMFS">github.com/wukong-daima/A-PMFS</a></span>
+</div>
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1. Cover -->
+    <section class="cover">
+      <div class="suits"><span class="suit-red">♥</span> <span>♠</span> <span class="suit-red">♦</span> <span>♣</span></div>
+      <h1 style="margin-top: 16px;">A-PMFS</h1>
+      <p class="subtitle" style="font-size: 0.78em; color: var(--accent-gold); margin: 6px 0 4px; letter-spacing: 0.05em;">
+        AI Persona Mental Forcing Simulator
+      </p>
+      <p style="font-size: 0.72em; color: #aab1c0; max-width: 780px; margin: 0 auto;">
+        벡터 유사도 기반 키워드 프라이밍이 LLM 페르소나의 카드 선택을<br>통제할 수 있는가에 대한 통계적 검증
+      </p>
+
+      <div style="margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; font-size: 0.62em;">
+        <span style="padding: 4px 14px; background: rgba(244,201,122,0.12); border: 1px solid rgba(244,201,122,0.4); border-radius: 999px; color: var(--accent-gold);">#LLM Priming</span>
+        <span style="padding: 4px 14px; background: rgba(110,168,224,0.12); border: 1px solid rgba(110,168,224,0.4); border-radius: 999px; color: var(--accent-blue);">#Vector Similarity</span>
+        <span style="padding: 4px 14px; background: rgba(129,199,132,0.12); border: 1px solid rgba(129,199,132,0.4); border-radius: 999px; color: var(--accent-green);">#5-arm Ablation</span>
+        <span style="padding: 4px 14px; background: rgba(229,115,115,0.12); border: 1px solid rgba(229,115,115,0.4); border-radius: 999px; color: var(--accent-red);">#Mentalism</span>
+      </div>
+
+      <div class="three-col" style="margin-top: 22px; max-width: 920px; margin-left: auto; margin-right: auto;">
+        <div class="stat-card" style="border-left-color: var(--accent-gold); text-align: left;">
+          <div class="label">규모</div>
+          <div style="font-size: 0.78em; margin-top: 4px;" class="gold">100 페르소나 × 15,000 trials</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-red); text-align: left;">
+          <div class="label">핵심 결과</div>
+          <div style="font-size: 0.78em; margin-top: 4px;" class="red">D vs A · p = 2.1×10⁻¹⁰</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-green); text-align: left;">
+          <div class="label">3가지 가설 모두</div>
+          <div style="font-size: 0.78em; margin-top: 4px;" class="green">★★★ 강하게 지지</div>
+        </div>
+      </div>
+
+      <div class="author-block" style="margin-top: 22px;">
+        <div class="name">손재완</div>
+        <div class="affil">연세대학교 융합인문공학과</div>
+      </div>
+    </section>
+
+    <!-- 2. 목차 -->
+    <section>
+      <span class="corner-mark">Contents</span>
+      <h2>목차</h2>
+      <div style="text-align: left; max-width: 820px; margin: 18px auto; font-size: 0.72em; column-count: 2; column-gap: 32px; line-height: 1.9;">
+        <ol>
+          <li>연구 배경 — chae-acaan 회고</li>
+          <li>새로운 질문</li>
+          <li>핵심 가설 (H1·H2·H3)</li>
+          <li><strong class="gold">용어 & 약어 정리</strong></li>
+          <li>5-arm Ablation 설계</li>
+          <li>페르소나 설계 (10+ 메타)</li>
+          <li>Unfavored Target 선정</li>
+          <li>프라이밍 진화 — Brown → Keyword</li>
+          <li><strong class="gold">시스템 PRD & 스펙</strong></li>
+          <li><strong class="gold">사용한 AI 도구</strong></li>
+          <li>기술 파이프라인</li>
+          <li>Embedding & Vector 유사도</li>
+          <li>시뮬레이터 아키텍처</li>
+          <li>통계 검정 framework</li>
+          <li>실험 1: Darren Brown</li>
+          <li>진단 — 왜 실패?</li>
+          <li>실험 2: Keyword test</li>
+          <li>실험 3: 중간 규모 (최종)</li>
+          <li>단조 증가 패턴 (H2)</li>
+          <li>Placebo Control (H3)</li>
+          <li>주요 시각화</li>
+          <li>요약 표</li>
+          <li>의미와 한계</li>
+          <li>향후 연구 · 참고 문헌</li>
+          <li>Q &amp; A</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3. 연구 배경 -->
+    <section>
+      <span class="corner-mark">01 · Background</span>
+      <h2>연구 배경 — chae-acaan</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div style="font-size: 0.72em; text-align: left;">
+          <p class="label-strong">선행 발견</p>
+          <ul class="compact">
+            <li>GPT-4o-mini, 52,089건 시뮬레이션</li>
+            <li><span class="red">♥7 95.6%</span> 단일 카드 압도적 편향</li>
+            <li>모든 메타(성별·직업·MBTI)를 초월</li>
+            <li>Kubovy &amp; Psotka (1976) <em>"predominance of seven"</em> 효과 재현</li>
+          </ul>
+          <p class="label-strong" style="margin-top: 18px;">한계</p>
+          <ul class="compact">
+            <li>자연 편향 측정만, 프라이밍 효과 미검증</li>
+            <li>Control / Treatment 분리 안 됨</li>
+            <li>통계 검정 부재</li>
+          </ul>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="stat-card" style="border-left-color: var(--accent-red);">
+            <div class="label">♥7 자연 선호</div>
+            <div class="value">95.6%</div>
+            <div class="xsmall" style="margin-top: 4px;">52,089 시뮬레이션</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">메타 의존성</div>
+            <div class="value">없음</div>
+            <div class="xsmall" style="margin-top: 4px;">all-subset bias</div>
+          </div>
+        </div>
+      </div>
+      <div class="annot">
+        <strong>읽는 법:</strong> 위 95.6%는 "LLM에게 무작위 카드를 떠올리게 했을 때 100번 중 96번이 하트 7로 수렴"한다는 의미. 자연 상태(처치 없음)의 편향 강도를 보여줍니다.
+      </div>
+    </section>
+
+    <!-- 4. 새로운 질문 -->
+    <section>
+      <span class="corner-mark">02 · Research Question</span>
+      <h2>새로운 질문</h2>
+      <div class="quote" style="font-size: 0.95em; max-width: 920px; margin: 24px auto;">
+        "자연 편향이 그토록 강하다면 —<br>
+        <span class="gold">프라이밍으로 그 편향을 깨고</span><br>
+        <span class="red">자연 선호 외 카드도 유도</span>할 수 있을까?"
+      </div>
+      <div class="three-col" style="margin-top: 22px;">
+        <div class="stat-card" style="border-left-color: var(--accent-blue);">
+          <div class="label">선행 연구 (chae-acaan)</div>
+          <div style="font-size: 0.72em; margin-top: 6px;">"AI가 무엇을 선호하는가?"</div>
+          <div class="xsmall muted" style="margin-top: 4px;">자연 분포 측정</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-gold);">
+          <div class="label">본 연구 (A-PMFS)</div>
+          <div style="font-size: 0.72em; margin-top: 6px;" class="gold">"AI를 어디로 유도할 수 있는가?"</div>
+          <div class="xsmall muted" style="margin-top: 4px;">처치 효과 검증</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-green);">
+          <div class="label">최종 목표</div>
+          <div style="font-size: 0.72em; margin-top: 6px;" class="green">"왜 유도되는가?"</div>
+          <div class="xsmall muted" style="margin-top: 4px;">메커니즘 규명</div>
+        </div>
+      </div>
+      <div class="annot" style="margin-top: 18px;">
+        <strong>관찰 → 조작 → 인과:</strong> 선행 연구는 LLM의 자연 편향(♥7 95%+)을 발견했지만, <em>그 편향을 의도적으로 바꿀 수 있는가</em>는 미답. 본 연구는 priming이라는 처치 변수를 도입해 인과 추론으로 나아갑니다. Darren Brown의 멘탈리즘 메커니즘을 LLM 환경에서 재현 가능한지가 핵심.
+      </div>
+    </section>
+
+    <!-- 5. 핵심 가설 -->
+    <section>
+      <span class="corner-mark">03 · Hypothesis</span>
+      <h2>핵심 가설</h2>
+      <div style="text-align: left; max-width: 880px; margin: 14px auto;">
+        <div class="key-finding">
+          <strong class="gold">H1.</strong> Target 카드와 <span class="blue">벡터 유사도가 가까운 한국어 키워드 프라이밍</span>이
+          LLM 페르소나의 카드 선택을 baseline 대비 유의미하게 lift시킨다.
+        </div>
+        <div class="key-finding" style="border-color: rgba(110,168,224,0.4); background: linear-gradient(135deg, var(--bg-elev), rgba(110,168,224,0.08));">
+          <strong class="blue">H2.</strong> 프라이밍은 <span class="gold">단계적(color → suit → full)</span>으로 누적되며,
+          hit rate는 단조 증가 패턴을 보인다.
+        </div>
+        <div class="key-finding" style="border-color: rgba(129,199,132,0.4); background: linear-gradient(135deg, var(--bg-elev), rgba(129,199,132,0.08));">
+          <strong class="green">H3.</strong> Placebo (의미적 무관 프라이밍)는 <span class="red">lift 효과를 만들지 못한다</span> —
+          효과는 단순 "텍스트 노출"이 아닌 "의미적 가까움" 때문이다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 용어 & 약어 정리 -->
+    <section>
+      <span class="corner-mark">04 · Glossary</span>
+      <h2>용어 & 약어 정리</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div class="glossary">
+          <h4>마술·심리학</h4>
+          <dl>
+            <dt>ACAAN</dt>
+            <dd><em>Any Card At Any Number</em> — 관객이 지정한 카드가 지정한 위치에서 나오는 멘탈리즘의 대표 효과.</dd>
+            <dt>Mental Forcing</dt>
+            <dd>관객이 자유롭게 선택했다고 믿게 하면서 마술사가 카드를 유도하는 기술.</dd>
+            <dt>Priming (프라이밍)</dt>
+            <dd>먼저 접한 자극이 후속 판단·반응에 무의식적으로 영향을 주는 심리 현상.</dd>
+            <dt>Darren Brown 3-level</dt>
+            <dd>색(color) → 문양(suit) → 숫자(rank) 단계적 priming 기법.</dd>
+          </dl>
+        </div>
+        <div class="glossary">
+          <h4>통계·기술</h4>
+          <dl>
+            <dt>Embedding</dt>
+            <dd>텍스트를 의미를 보존하는 고차원 실수 벡터(예: 3072차원)로 변환.</dd>
+            <dt>Cosine similarity</dt>
+            <dd>두 벡터 사이의 각도로 의미적 가까움을 측정 (−1 ≤ sim ≤ 1).</dd>
+            <dt>Ablation</dt>
+            <dd>구성 요소를 단계적으로 추가/제거하며 효과를 분리 측정.</dd>
+            <dt>χ² (chi-square)</dt>
+            <dd>관측 빈도와 기대 빈도의 차이를 검정하는 통계량.</dd>
+            <dt>Cramér's V</dt>
+            <dd>χ² 기반의 표본 크기 독립 효과 크기 지표 (0~1).</dd>
+            <dt>Wilson 95% CI</dt>
+            <dd>이항 비율의 신뢰구간 — 작은 표본에서도 강건.</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. 5-arm Ablation -->
+    <section>
+      <span class="corner-mark">05 · Design</span>
+      <h2>5-arm Ablation 설계</h2>
+      <div class="annot" style="margin-top: 8px; margin-bottom: 14px;">
+        <strong>"Arm"이란?</strong> <em>Treatment Arm</em>의 줄임 — 임상시험·실험설계에서 동일 모집단을 서로 다른 처치 조건에 배정하는 그룹을 가리키는 표준 용어. 5-arm은 5개의 비교 그룹을 의미합니다.
+      </div>
+      <table style="margin-top: 8px;">
+        <tr><th>Arm</th><th>이름</th><th>처치</th><th>목적</th></tr>
+        <tr><td><strong>A</strong></td><td>Control</td><td>프라이밍 없음</td><td>자연 baseline</td></tr>
+        <tr><td><strong>B</strong></td><td>Color</td><td>색상 단계 프라이밍</td><td>1단계 효과</td></tr>
+        <tr><td><strong>C</strong></td><td>Color + Suit</td><td>색+문양 프라이밍</td><td>2단계 효과</td></tr>
+        <tr><td><strong>D</strong></td><td>Full</td><td>색+문양+숫자 모든 단계</td><td>최대 효과</td></tr>
+        <tr><td><strong>E</strong></td><td>Placebo</td><td>무관 텍스트 프라이밍</td><td>"순수 노출 효과" 제거</td></tr>
+      </table>
+      <div class="annot">
+        <strong>왜 5-arm:</strong> A는 baseline, B/C/D는 priming 단계 비교, E는 placebo control. Per-persona × per-arm 디자인으로 개인차(individual variance) 통제.
+      </div>
+    </section>
+
+    <!-- 8. 페르소나 설계 -->
+    <section>
+      <span class="corner-mark">06 · Persona</span>
+      <h2>페르소나 설계 — 10+ 메타 정보</h2>
+      <div class="two-col">
+        <table style="font-size: 0.72em;">
+          <tr><th style="width: 32%;">필드</th><th>전체 값</th></tr>
+          <tr><td><code>gender</code></td><td>남 · 여</td></tr>
+          <tr><td><code>age_group</code></td><td>10대 · 20대 · 30대 · 40대 · 50대 · 60대이상</td></tr>
+          <tr><td><code>style</code></td><td>캐주얼 · 포멀 · 스트리트 · 빈티지 · 아웃도어</td></tr>
+          <tr><td><code>energy</code></td><td>활발 · 차분 · 감성적 · 열정적 · 무기력</td></tr>
+          <tr><td><code>job</code></td><td>학생 · 직장인 · 전문직 · 자영업 · 무직</td></tr>
+          <tr><td><code>mood</code></td><td>매우좋음 · 좋음 · 보통 · 안좋음 · 매우안좋음</td></tr>
+          <tr><td><code>favorite_color</code></td><td>빨강 · 주황 · 노랑 · 초록 · 파랑 · 보라 · 검정 · 흰색 · 분홍 · 갈색 · 민트색 · 하늘색 · 에메랄드색</td></tr>
+          <tr><td><code>card_familiarity</code></td><td>없음 · 가끔 · 자주</td></tr>
+          <tr><td><code>mbti</code></td><td>16종 (ENTP · ENFP · ESTP · ESFP · INTJ · INTP · INFJ · INFP · ENTJ · ENFJ · ESTJ · ESFJ · ISTJ · ISFJ · ISTP · ISFP) → 10 archetype 매핑</td></tr>
+          <tr><td><code>name · hobby · speech_quirk</code></td><td>자유 텍스트</td></tr>
+        </table>
+        <div style="font-size: 0.65em; text-align: left;">
+          <p class="label-strong">분포 강제 주입</p>
+          <ul class="compact">
+            <li>코드에서 deterministic 분배</li>
+            <li>각 LLM 호출에 target 값 명시</li>
+            <li>LLM이 위반 시 코드가 덮어쓰기</li>
+          </ul>
+          <p class="label-strong" style="margin-top: 12px;">실제 분포 (n = 100)</p>
+          <ul class="compact">
+            <li>10대 + 20대 = <span class="gold">50%</span> ✓</li>
+            <li>좋음 + 매우좋음 = <span class="gold">60%</span> ✓</li>
+            <li>10 archetype × 10명 균등</li>
+          </ul>
+          <p class="label-strong" style="margin-top: 12px;">10 Archetype</p>
+          <ul class="tight xsmall">
+            <li>직관적_모험가 · 분석적_전략가</li>
+            <li>감성적_예술가 · 실용적_관리자</li>
+            <li>자유로운_방랑자 · 따뜻한_조력자</li>
+            <li>차가운_회의주의자 · 야망찬_도전자</li>
+            <li>평온한_관찰자 · 신비주의자</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Unfavored Target -->
+    <section>
+      <span class="corner-mark">07 · Target Design</span>
+      <h2>Unfavored Target 선정</h2>
+      <p style="font-size: 0.7em; color: #d8d8dc; max-width: 820px; margin: 12px auto;">
+        <strong class="red">문제:</strong> 자연 Top-1 target은 baseline이 너무 높아(<span class="red">44%</span>) 프라이밍 효과 측정 불가
+      </p>
+      <div class="pipeline">
+        <div class="step">
+          <div class="num">1</div>
+          Calibration<br>(Arm A, n=10/페르소나)
+        </div>
+        <div class="arrow">→</div>
+        <div class="step">
+          <div class="num">2</div>
+          페르소나별<br>chosen Top-N 추출
+        </div>
+        <div class="arrow">→</div>
+        <div class="step">
+          <div class="num">3</div>
+          제외 후<br>sim 중간(30-70%) 카드
+        </div>
+        <div class="arrow">→</div>
+        <div class="step">
+          <div class="num">4</div>
+          새 target<br>persona_card_mapping
+        </div>
+      </div>
+      <div class="stat-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 22px;">
+        <div class="stat-card">
+          <div class="label">자연 Top-1 baseline</div>
+          <div class="value red">44.1%</div>
+          <div class="xsmall" style="margin-top: 6px; line-height: 1.5;">페르소나가 처치 없이 가장 자주 고른 카드를 target으로 잡았을 때의 hit rate. <strong class="red">너무 높아서</strong> 프라이밍 효과가 추가될 자리가 없음 (ceiling effect).</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-green);">
+          <div class="label">Unfavored baseline</div>
+          <div class="value green">0.58%</div>
+          <div class="xsmall" style="margin-top: 6px; line-height: 1.5;">페르소나가 거의 안 고르는 카드(Top-5 외 + sim 중간)를 target으로 한 후 처치 없이 측정. <strong class="green">충분히 낮아</strong> 프라이밍 lift를 깨끗하게 측정 가능.</div>
+        </div>
+      </div>
+      <div class="annot">
+        <strong>왜 baseline을 낮춰야 하나:</strong> 천장 효과(ceiling effect)는 측정값이 상한에 가까워 추가 변화가 보이지 않는 현상. 자연 Top-1(44%)에서는 priming이 추가로 끌어올릴 여지가 작고 노이즈가 신호를 가립니다. Unfavored(0.6%)는 0~100% 중 거의 바닥이라 작은 lift(예: 2%p)도 명확히 검출 가능합니다.
+      </div>
+    </section>
+
+    <!-- 10. 프라이밍 진화 -->
+    <section>
+      <span class="corner-mark">08 · Priming</span>
+      <h2>프라이밍 진화 — 두 접근의 비교</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div>
+          <h3>v1–v3: Darren Brown 메타포</h3>
+          <pre><code class="hljs">"비 오는 날, 창밖의 빨간 우산이
+나에게 소중한 기억을
+상기시켜줘요. 그 느낌이
+사각형의 빛나는 매력으로
+변하죠..."</code></pre>
+          <ul class="compact xsmall">
+            <li>K=10 후보 + judge 평가</li>
+            <li>0.3·sim + 0.7·judge 가중</li>
+            <li>한국어 자연 문장</li>
+            <li class="red">→ hit rate ≈ 0.4%</li>
+          </ul>
+        </div>
+        <div>
+          <h3>v4: Keyword 프라이밍 <span class="badge">NEW</span></h3>
+          <pre><code class="hljs">"잠시 다음 단어들의 이미지를
+마음속에 자연스럽게 떠올려
+보세요: 호수, 정원, 잎사귀,
+거울, 사계, ..."</code></pre>
+          <ul class="compact xsmall">
+            <li>50 키워드 추출 → embedding</li>
+            <li>target과 cosine 정렬</li>
+            <li>Top 5/10/15 직접 노출</li>
+            <li class="green">→ hit rate 2.73% (★★★)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. PRD & 스펙 -->
+    <section>
+      <span class="corner-mark">09 · System Spec</span>
+      <h2>시스템 PRD & 스펙</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div style="font-size: 0.65em; text-align: left;">
+          <p class="label-strong">목표 (Product Requirements)</p>
+          <ul class="compact">
+            <li>LLM 페르소나의 카드 선택에 대한 priming 효과 검증</li>
+            <li>벡터 유사도 기반 키워드 priming 가설 (H1–H3)</li>
+            <li>재현 가능한 5-arm Ablation pipeline</li>
+            <li>통계적으로 보고 가능한 effect size</li>
+          </ul>
+          <p class="label-strong" style="margin-top: 12px;">기능 요구사항</p>
+          <ul class="compact">
+            <li>분포 강제 페르소나 100명 생성</li>
+            <li>Calibration → Target redefine → Priming</li>
+            <li>5-arm × n trials 비동기 시뮬레이션</li>
+            <li>Resume / cache / atomic write</li>
+            <li>χ²·V·CI 자동 리포트</li>
+          </ul>
+        </div>
+        <div style="font-size: 0.65em; text-align: left;">
+          <p class="label-strong">기술 스펙</p>
+          <table style="width: 100%; font-size: 0.95em;">
+            <tr><td><strong>언어</strong></td><td>Python 3.11</td></tr>
+            <tr><td><strong>비동기</strong></td><td>asyncio · Semaphore · ThreadPool</td></tr>
+            <tr><td><strong>데이터</strong></td><td>Parquet (pandas + pyarrow)</td></tr>
+            <tr><td><strong>통계</strong></td><td>scipy.stats · numpy</td></tr>
+            <tr><td><strong>리포트</strong></td><td>Jinja2 HTML + matplotlib</td></tr>
+            <tr><td><strong>UI</strong></td><td>Streamlit (탐색용)</td></tr>
+            <tr><td><strong>테스트</strong></td><td>pytest 110건 통과</td></tr>
+            <tr><td><strong>호스팅</strong></td><td>GitHub Pages (이 슬라이드)</td></tr>
+          </table>
+          <p class="label-strong" style="margin-top: 12px;">규모</p>
+          <ul class="compact">
+            <li>100 페르소나 · 5 arm · 30 trials/arm</li>
+            <li>총 15,000 LLM 호출</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. 사용한 AI 도구 -->
+    <section>
+      <span class="corner-mark">10 · AI Tools</span>
+      <h2>검증에 사용한 AI 도구</h2>
+      <table style="margin-top: 14px;">
+        <tr>
+          <th>역할</th><th>모델</th><th>업무</th>
+        </tr>
+        <tr>
+          <td><strong>Subject</strong> (피험자)</td>
+          <td>OpenAI <code>gpt-4o</code></td>
+          <td>페르소나 역할극으로 카드 선택 (시뮬레이션)</td>
+        </tr>
+        <tr>
+          <td><strong>Helper</strong> (보조)</td>
+          <td>OpenAI <code>gpt-4o-mini</code></td>
+          <td>페르소나 생성 · 키워드 추출 · 응답 파싱 fallback</td>
+        </tr>
+        <tr>
+          <td><strong>Judge</strong> (평가)</td>
+          <td>OpenAI <code>gpt-4o</code></td>
+          <td>(v1-v3) Darren Brown 스크립트 4축 점수</td>
+        </tr>
+        <tr>
+          <td><strong>Embedding</strong></td>
+          <td>OpenAI <code>text-embedding-3-large</code></td>
+          <td>페르소나·카드·키워드의 3072차원 벡터화</td>
+        </tr>
+        <tr>
+          <td><strong>개발 보조</strong></td>
+          <td>Anthropic <code>Claude Code (Opus 4.7)</code></td>
+          <td>코드 작성·리팩토링·테스트·발표 자료 작성</td>
+        </tr>
+      </table>
+      <div class="annot">
+        <strong>안정성 보강:</strong> OpenAI client는 <code>max_retries=5</code>, <code>timeout=60.0</code>로 일시적 연결 오류·rate-limit에 자동 backoff. 모든 호출은 SHA-256 캐시로 재사용 가능.
+      </div>
+      <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 18px;">
+        <div class="stat-card" style="border-left-color: var(--accent-blue);">
+          <div class="label">총 LLM 호출</div>
+          <div class="value">~22,000회</div>
+          <div class="xsmall" style="margin-top: 4px;">전 실험 누적</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-blue);">
+          <div class="label">임베딩 호출</div>
+          <div class="value">~5,200회</div>
+          <div class="xsmall" style="margin-top: 4px;">페르소나·카드·키워드</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">실험 총 비용</div>
+          <div class="value">~ $50 USD</div>
+          <div class="xsmall" style="margin-top: 4px;">OpenAI API 사용료</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-green);">
+          <div class="label">개발 보조 비용</div>
+          <div class="value green">$0</div>
+          <div class="xsmall" style="margin-top: 4px;">Claude Code 구독 포함</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. 기술 파이프라인 -->
+    <section>
+      <span class="corner-mark">11 · Pipeline</span>
+      <h2>기술 파이프라인 — 5 Stage</h2>
+      <div class="pipeline" style="margin-top: 18px;">
+        <div class="step">
+          <div class="num">1</div>
+          <strong>Persona</strong><br>
+          GPT-4o-mini × 100명<br>
+          분포 강제 주입
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <strong>Vector</strong><br>
+          text-embedding-3-large<br>
+          (3072 dim)
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <strong>Priming</strong><br>
+          Keyword 추출 + 정렬<br>
+          ThreadPool ×8
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <strong>Simulate</strong><br>
+          GPT-4o × 5 arm<br>
+          async + retry
+        </div>
+        <div class="step">
+          <div class="num">5</div>
+          <strong>Analyze</strong><br>
+          χ², Cramér's V<br>
+          Wilson CI
+        </div>
+      </div>
+      <table style="margin-top: 18px; font-size: 0.7em;">
+        <tr><th>Stage</th><th>입력</th><th>출력</th><th>호출 수</th><th>시간 (실측)</th></tr>
+        <tr><td>1 Persona</td><td>10 archetype 정의</td><td>personas.json (100명)</td><td>~100</td><td>~16분</td></tr>
+        <tr><td>2 Vector</td><td>페르소나·카드 텍스트</td><td>embeddings/*.npy</td><td>152</td><td>~3초</td></tr>
+        <tr><td>2.5 Calibration</td><td>페르소나 + cards</td><td>자연 선호 trials</td><td>1,000</td><td>~9분</td></tr>
+        <tr><td>3 Priming</td><td>target + 페르소나</td><td>priming_scripts.json</td><td>~500</td><td>~5분</td></tr>
+        <tr><td>4 Simulate</td><td>plan + scripts</td><td>trials.parquet (15K)</td><td>15,000</td><td>~2시간 25분</td></tr>
+        <tr><td>5 Analyze</td><td>trials.parquet</td><td>report.html + summary.json</td><td>0</td><td>&lt; 1초</td></tr>
+      </table>
+      <div class="annot">
+        <strong>안정성:</strong> Resume 가능 · Parquet append · OpenAI client <code>max_retries=5</code>, <code>timeout=60.0</code> · SHA-256 캐시 · atomic write. 중간에 실패해도 정확한 지점부터 재개합니다.
+      </div>
+    </section>
+
+    <!-- 14. Embedding & Vector -->
+    <section>
+      <span class="corner-mark">12 · Embedding</span>
+      <h2>Embedding & Vector 유사도</h2>
+      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.65em;">
+        <p class="label-strong">키워드 추출 + 정렬 메커니즘</p>
+        <pre><code class="hljs">1. target_card = "다이아_7"
+2. GPT-4o-mini → 50개 한국어 키워드 후보 추출
+   (의미·시각·정서·문화적 연관)
+3. text-embedding-3-large로 임베딩
+   keyword_vec ∈ ℝ^3072
+4. cosine_sim(target_card_vec, keyword_vec_i)
+   = (v_t · v_k) / (‖v_t‖·‖v_k‖)
+5. 정렬 후 Top-N 선정 (level별 5/10/15)
+6. priming 스크립트로 직접 노출</code></pre>
+        <p class="label-strong" style="margin-top: 16px;">왜 효과적인가</p>
+        <ul class="compact">
+          <li>판단(judge) 노이즈 제거 — sim에 90% 가중치</li>
+          <li>키워드가 카드의 "의미적 좌표"를 직접 전달</li>
+          <li>메타포는 의미가 우회되어 희석됨</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 15. 시뮬레이터 아키텍처 -->
+    <section>
+      <span class="corner-mark">13 · Architecture</span>
+      <h2>시뮬레이터 아키텍처</h2>
+      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.65em;">
+        <p class="label-strong">병렬화 + 안정성</p>
+        <table style="margin-top: 8px; width: 100%; font-size: 1em;">
+          <tr><th>요소</th><th>구현</th></tr>
+          <tr><td>Simulate</td><td>asyncio.Semaphore · concurrency 10–30 (env override)</td></tr>
+          <tr><td>Priming</td><td>ThreadPoolExecutor(workers=8)</td></tr>
+          <tr><td>Calibration</td><td>페르소나 × trial 평면화</td></tr>
+          <tr><td>Retry</td><td>OpenAI client max_retries=5 + backoff</td></tr>
+          <tr><td>Cache</td><td>SHA-256 키 + atomic write (uuid tmp)</td></tr>
+          <tr><td>Resume</td><td>(persona_id, arm, trial_idx) 키로 skip</td></tr>
+        </table>
+        <p style="margin-top: 14px;"><strong class="gold">파싱:</strong> regex first → GPT-4o-mini fallback</p>
+      </div>
+    </section>
+
+    <!-- 16. 통계 검정 framework -->
+    <section>
+      <span class="corner-mark">14 · Statistics</span>
+      <h2>통계 검정 Framework</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div style="text-align: left; font-size: 0.7em;">
+          <p class="label-strong">사용한 검정 방식</p>
+          <ul class="compact" style="margin-top: 6px;">
+            <li><strong class="gold">Per-arm hit rate</strong><br>+ Wilson 95% 신뢰구간</li>
+            <li><strong class="gold">Pairwise χ² test</strong><br>(2×2 contingency, A vs B/C/D/E)</li>
+            <li><strong class="gold">Cramér's V</strong><br>effect size (sample size 독립)</li>
+            <li><strong class="gold">Omnibus χ² (5-arm)</strong><br>overall difference 검정</li>
+            <li><strong class="gold">vs Uniform (1/52)</strong><br>random baseline 대비</li>
+          </ul>
+          <div class="quote" style="margin-top: 14px; font-size: 0.95em; padding: 10px 16px;">
+            유의 수준 α = 0.05<br>(★ p&lt;0.05, ★★ p&lt;0.01, ★★★ p&lt;0.001)
+          </div>
+        </div>
+        <div style="text-align: left; font-size: 0.65em;">
+          <p class="label-strong blue">각 방식의 의미</p>
+          <dl style="margin-top: 6px;">
+            <dt class="gold" style="font-weight: 700;">χ² (chi-square) test</dt>
+            <dd style="margin: 2px 0 10px; line-height: 1.5;">관측 빈도와 기대 빈도의 차이를 정량화. 두 그룹의 hit/miss 분포가 우연히 같은지 검정. p-value가 작을수록 우연 가능성이 낮음.</dd>
+
+            <dt class="gold" style="font-weight: 700;">Pairwise vs Omnibus</dt>
+            <dd style="margin: 2px 0 10px; line-height: 1.5;">Pairwise는 두 arm씩 비교(A vs D 등), Omnibus는 5개 arm 전체가 동일한지 한 번에 검정. 다중 비교 보정 효과.</dd>
+
+            <dt class="gold" style="font-weight: 700;">Cramér's V (효과 크기)</dt>
+            <dd style="margin: 2px 0 10px; line-height: 1.5;">표본이 커지면 p-value는 자연스레 작아지므로, 효과의 실질적 크기를 별도 측정. 0.1 small · 0.3 medium · 0.5 large 기준.</dd>
+
+            <dt class="gold" style="font-weight: 700;">Wilson 95% CI</dt>
+            <dd style="margin: 2px 0 10px; line-height: 1.5;">이항 비율의 신뢰구간. 표본을 다시 뽑아도 95% 확률로 이 구간 안. 작은 hit rate(예: 1%)에서도 강건.</dd>
+
+            <dt class="gold" style="font-weight: 700;">p-value</dt>
+            <dd style="margin: 2px 0 0; line-height: 1.5;">귀무가설(차이 없음)이 참일 때 관측 결과 이상의 차이가 우연히 나타날 확률. α=0.05 미만이면 "통계적으로 유의".</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. 실험 1: Darren Brown -->
+    <section>
+      <span class="corner-mark">15 · Experiment 1</span>
+      <h2>실험 1: Darren Brown 프라이밍</h2>
+      <p class="small">자연-Top1 target · n=5/arm · 100명 · 2,500 trials</p>
+      <div class="two-col" style="margin-top: 14px; align-items: start;">
+        <table>
+          <tr><th>Arm</th><th>hit rate</th><th>vs A</th></tr>
+          <tr><td>A (control)</td><td><strong>44.1%</strong></td><td>—</td></tr>
+          <tr><td>B (color)</td><td>30.6%</td><td class="red">−13.5p</td></tr>
+          <tr><td>C</td><td>37.2%</td><td class="red">−6.9p</td></tr>
+          <tr><td>D (full)</td><td>34.2%</td><td class="red">−9.9p</td></tr>
+          <tr><td>E (placebo)</td><td>30.8%</td><td class="red">−13.3p</td></tr>
+        </table>
+        <div>
+          <p class="label-strong">예시 priming script</p>
+          <pre style="margin-top: 4px;"><code class="hljs" style="font-size: 0.75em;">"비 오는 날, 창밖의 빨간 우산이
+나에게 소중한 기억을 상기시켜요.
+그 느낌이 사각형의 빛나는
+매력으로 변하죠.
+홀수의 찬란한 리듬이
+쿵, 쿵, 쿵 울려 퍼져요."</code></pre>
+          <p class="xsmall muted" style="margin-top: 6px;">target: 하트 7 · sim 0.24~0.27 정체</p>
+        </div>
+      </div>
+      <div class="key-finding" style="margin-top: 14px; border-color: rgba(229,115,115,0.4);">
+        <strong class="red">결론:</strong> 자연 Top-1 baseline이 너무 강해 ceiling effect 발생.
+        <strong>3가지 설계 문제 진단</strong> → target / 가중치 / priming 형식 재설계 필요 (다음 슬라이드).
+      </div>
+    </section>
+
+    <!-- 18. 진단 -->
+    <section>
+      <span class="corner-mark">16 · Diagnosis</span>
+      <h2>진단 — 왜 효과가 없었나?</h2>
+      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.72em;">
+        <p class="label-strong">1. Target 선택 문제</p>
+        <ul class="compact">
+          <li>자연 Top-1은 baseline ≈ 44% → ceiling effect</li>
+          <li>→ <strong>unfavored target</strong>으로 재설계 (baseline ~0.5%)</li>
+        </ul>
+        <p class="label-strong" style="margin-top: 12px;">2. 프라이밍 선정 가중치 문제</p>
+        <ul class="compact">
+          <li>0.3·sim + 0.7·judge → judge가 sim 무시</li>
+          <li>K=10 중 sim 최저 후보가 selected (예: best=0.156 &lt; others mean=0.179)</li>
+          <li>→ <strong>가중치 0.9·sim + 0.1·judge</strong>로 조정</li>
+        </ul>
+        <p class="label-strong" style="margin-top: 12px;">3. 프라이밍 형식 문제 (핵심)</p>
+        <ul class="compact">
+          <li>Brown 메타포는 "의미 우회" — target과 sim 0.24–0.27 정체</li>
+          <li>→ <strong>키워드 직접 노출 방식</strong>으로 재설계</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 19. 실험 2: Keyword test -->
+    <section>
+      <span class="corner-mark">17 · Experiment 2</span>
+      <h2>실험 2: Keyword 프라이밍 (test)</h2>
+      <p class="small">Unfavored target · n=5/arm · 100명 · 2,500 trials</p>
+      <table style="margin-top: 14px;">
+        <tr><th>Arm</th><th>hit rate</th><th>vs A</th><th>χ²</th><th>p</th></tr>
+        <tr><td>A (control)</td><td>0.4%</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>B (color)</td><td class="green">2.4%</td><td>+2.0p</td><td>5.87</td><td>0.015 ★</td></tr>
+        <tr><td>C</td><td class="green">2.8%</td><td>+2.4p</td><td>7.69</td><td>0.0056 ★★</td></tr>
+        <tr><td><strong>D (full)</strong></td><td class="gold"><strong>3.0%</strong></td><td><strong>+2.6p</strong></td><td>8.62</td><td><strong>0.0033 ★★</strong></td></tr>
+        <tr><td>E (placebo)</td><td>1.6%</td><td>+1.2p</td><td>2.53</td><td>0.112 ns</td></tr>
+      </table>
+      <p style="margin-top: 18px; font-size: 0.7em;">
+        <strong class="gold">Omnibus χ²(4) = 11.29, p = 0.0235 ★</strong>
+        — 가설 H1·H3 1차 검증
+      </p>
+    </section>
+
+    <!-- 20. 실험 3: 중간 규모 최종 -->
+    <section>
+      <span class="corner-mark">18 · Experiment 3</span>
+      <h2>실험 3: 중간 규모 검증 (최종)</h2>
+      <p class="small">Unfavored target · n=30/arm · 100명 · <strong class="gold">15,000 trials</strong></p>
+      <table style="margin-top: 14px;">
+        <tr><th>Arm</th><th>n</th><th>hit rate</th><th>CI 95%</th><th>vs A</th><th>p</th><th>V</th></tr>
+        <tr><td>A</td><td>3000</td><td><strong>0.60%</strong></td><td>[0.4%, 0.9%]</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>B</td><td>3000</td><td class="green">1.90%</td><td>[1.5%, 2.5%]</td><td>+1.30p</td><td>1.0×10⁻⁵ ★★★</td><td>0.057</td></tr>
+        <tr><td>C</td><td>3000</td><td class="green">2.23%</td><td>[1.8%, 2.8%]</td><td>+1.63p</td><td>1.6×10⁻⁷ ★★★</td><td>0.068</td></tr>
+        <tr><td><strong>D</strong></td><td>3000</td><td class="gold"><strong>2.73%</strong></td><td>[2.2%, 3.4%]</td><td><strong>+2.13p</strong></td><td><strong>2.1×10⁻¹⁰ ★★★</strong></td><td><strong>0.082</strong></td></tr>
+        <tr><td>E</td><td>3000</td><td>0.90%</td><td>[0.6%, 1.3%]</td><td>+0.30p</td><td>0.231 ns ✓</td><td>0.015</td></tr>
+      </table>
+      <div class="key-finding" style="margin-top: 14px;">
+        <strong>Omnibus χ²(4) = 59.05, p = 4.6 × 10⁻¹²</strong> ★★★ —
+        모든 priming arm이 baseline 대비 매우 강하게 유의, placebo는 ns로 안전
+      </div>
+    </section>
+
+    <!-- 21. 단조 증가 패턴 -->
+    <section>
+      <span class="corner-mark">19 · H2 Result</span>
+      <h2>H2 검증 — 단조 증가 패턴</h2>
+      <div style="text-align: center; margin-top: 14px;">
+        <svg viewBox="0 0 720 340" style="max-width: 820px;">
+          <line x1="70" y1="290" x2="690" y2="290" stroke="#2a3142" stroke-width="2"/>
+          <line x1="70" y1="40" x2="70" y2="290" stroke="#2a3142" stroke-width="2"/>
+          <text x="60" y="294" fill="#8a93a6" font-size="13" text-anchor="end">0%</text>
+          <text x="60" y="234" fill="#8a93a6" font-size="13" text-anchor="end">1%</text>
+          <text x="60" y="174" fill="#8a93a6" font-size="13" text-anchor="end">2%</text>
+          <text x="60" y="114" fill="#8a93a6" font-size="13" text-anchor="end">3%</text>
+          <g>
+            <rect x="110" y="254" width="80" height="36" fill="#5a6275" rx="2"/>
+            <text x="150" y="314" fill="#d8d8dc" font-size="14" text-anchor="middle">A</text>
+            <text x="150" y="244" fill="#c2c8d4" font-size="13" text-anchor="middle">0.60%</text>
+          </g>
+          <g>
+            <rect x="230" y="176" width="80" height="114" fill="#6ea8e0" rx="2"/>
+            <text x="270" y="314" fill="#d8d8dc" font-size="14" text-anchor="middle">B</text>
+            <text x="270" y="166" fill="#6ea8e0" font-size="13" text-anchor="middle">1.90%</text>
+          </g>
+          <g>
+            <rect x="350" y="156" width="80" height="134" fill="#f4c97a" rx="2"/>
+            <text x="390" y="314" fill="#d8d8dc" font-size="14" text-anchor="middle">C</text>
+            <text x="390" y="146" fill="#f4c97a" font-size="13" text-anchor="middle">2.23%</text>
+          </g>
+          <g>
+            <rect x="470" y="126" width="80" height="164" fill="#e57373" rx="2"/>
+            <text x="510" y="314" fill="#d8d8dc" font-size="14" text-anchor="middle">D</text>
+            <text x="510" y="116" fill="#e57373" font-size="13" text-anchor="middle">2.73%</text>
+          </g>
+          <g>
+            <rect x="590" y="236" width="80" height="54" fill="#8a93a6" rx="2"/>
+            <text x="630" y="314" fill="#d8d8dc" font-size="14" text-anchor="middle">E</text>
+            <text x="630" y="226" fill="#c2c8d4" font-size="13" text-anchor="middle">0.90%</text>
+          </g>
+          <line x1="270" y1="176" x2="390" y2="156" stroke="#f4c97a" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+          <line x1="390" y1="156" x2="510" y2="126" stroke="#f4c97a" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="three-col" style="margin-top: 12px;">
+        <div class="stat-card" style="border-left-color: var(--accent-blue);">
+          <div class="label">1단계 (B vs A)</div>
+          <div class="value blue">+1.30p</div>
+          <div class="xsmall muted">색상 priming만 추가</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">2단계 (C vs B)</div>
+          <div class="value">+0.33p</div>
+          <div class="xsmall muted">+ 문양 정보 추가</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-red);">
+          <div class="label">3단계 (D vs C)</div>
+          <div class="value red">+0.50p</div>
+          <div class="xsmall muted">+ 숫자 정보까지</div>
+        </div>
+      </div>
+      <div class="annot">
+        <strong>읽는 법:</strong>
+        막대 높이 = arm별 hit rate (target 카드를 정확히 선택한 비율).
+        <span class="gold">노란 점선</span>은 B → C → D 단조 증가 추세.
+        <strong>의미:</strong> 1단계(color) → 2단계(+suit) → 3단계(+rank) 누적 priming이 hit rate를 단계적으로 끌어올림. 가설 H2 관측. 각 단계의 marginal lift는 1단계가 가장 크고(+1.30p) 추가 단계가 +0.33~0.5p씩 더해짐 — diminishing returns 패턴.
+      </div>
+    </section>
+
+    <!-- 22. Placebo Control -->
+    <section>
+      <span class="corner-mark">20 · H3 Result</span>
+      <h2>H3 검증 — Placebo Control</h2>
+      <div class="annot" style="margin-top: 8px; margin-bottom: 14px;">
+        <strong>플라시보 검증이란?</strong> 임상시험에서 가짜 약(설탕 알약)을 진짜 약과 비교해 효과의 진정성을 검증하는 방법. 본 연구에서는 <strong>의미적으로 무관한 텍스트</strong>를 진짜 priming과 동일한 형식·길이로 노출. 만약 placebo도 효과를 보이면 "그냥 텍스트만 봐도 카드 선택이 바뀐다"는 뜻이 되어 진짜 priming의 효과를 단정할 수 없습니다.
+      </div>
+      <div class="two-col" style="margin-top: 14px;">
+        <div>
+          <div class="stat-card" style="border-left-color: var(--accent-red);">
+            <div class="label">Priming Arms (B/C/D)</div>
+            <div class="value">vs A: p &lt; 10⁻⁵</div>
+            <div class="xsmall" style="margin-top: 4px;">의미적 가까운 키워드</div>
+          </div>
+          <div class="stat-card" style="margin-top: 12px; border-left-color: #5a6275;">
+            <div class="label">Placebo (Arm E)</div>
+            <div class="value">vs A: p = 0.231 <span class="green">ns</span></div>
+            <div class="xsmall" style="margin-top: 4px;">의미적 무관 텍스트</div>
+          </div>
+        </div>
+        <div style="font-size: 0.65em; text-align: left;">
+          <p class="label-strong">결과의 의미</p>
+          <ul class="compact">
+            <li>"단순 텍스트 노출" 효과 ❌</li>
+            <li>"의미적 관련성" 효과 ✓</li>
+            <li>가설 H3 강하게 지지</li>
+            <li>임상시험 placebo control과 동등한 견고함</li>
+          </ul>
+          <p class="label-strong" style="margin-top: 10px;">왜 ns가 좋은 결과인가</p>
+          <ul class="tight xsmall">
+            <li>Placebo와 control이 통계적으로 같음 = priming의 효과가 <em>의미</em>에서 나옴이 분리 검증됨</li>
+            <li>만약 E도 유의했으면 H1·H2의 결과가 priming 자체가 아닌 "텍스트 자극" 때문일 가능성</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23. 주요 시각화 -->
+    <section>
+      <span class="corner-mark">21 · Visualization</span>
+      <h2>주요 시각화 — Hit Rate by Arm</h2>
+      <div style="text-align: center;">
+        <svg viewBox="0 0 760 370" style="max-width: 880px;">
+          <line x1="80" y1="320" x2="740" y2="320" stroke="#2a3142" stroke-width="2"/>
+          <line x1="80" y1="40" x2="80" y2="320" stroke="#2a3142" stroke-width="2"/>
+          <line x1="80" y1="248" x2="740" y2="248" stroke="#e57373" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+          <text x="748" y="252" fill="#e57373" font-size="11">Random 1.9%</text>
+          <text x="70" y="320" fill="#8a93a6" font-size="13" text-anchor="end">0%</text>
+          <text x="70" y="248" fill="#8a93a6" font-size="13" text-anchor="end">1.9%</text>
+          <text x="70" y="178" fill="#8a93a6" font-size="13" text-anchor="end">3.0%</text>
+          <text x="70" y="108" fill="#8a93a6" font-size="13" text-anchor="end">5.0%</text>
+
+          <g>
+            <rect x="130" y="297" width="60" height="23" fill="#5a6275" rx="2"/>
+            <line x1="160" y1="290" x2="160" y2="305" stroke="#fff" stroke-width="1.5"/>
+            <line x1="153" y1="290" x2="167" y2="290" stroke="#fff" stroke-width="1.5"/>
+            <line x1="153" y1="305" x2="167" y2="305" stroke="#fff" stroke-width="1.5"/>
+            <text x="160" y="340" fill="#d8d8dc" font-size="13" text-anchor="middle">A</text>
+            <text x="160" y="288" fill="#c2c8d4" font-size="11" text-anchor="middle">0.60%</text>
+          </g>
+          <g>
+            <rect x="250" y="237" width="60" height="83" fill="#6ea8e0" rx="2"/>
+            <line x1="280" y1="226" x2="280" y2="252" stroke="#fff" stroke-width="1.5"/>
+            <text x="280" y="340" fill="#d8d8dc" font-size="13" text-anchor="middle">B</text>
+            <text x="280" y="218" fill="#6ea8e0" font-size="11" text-anchor="middle">1.90%</text>
+          </g>
+          <g>
+            <rect x="370" y="220" width="60" height="100" fill="#f4c97a" rx="2"/>
+            <line x1="400" y1="207" x2="400" y2="240" stroke="#fff" stroke-width="1.5"/>
+            <text x="400" y="340" fill="#d8d8dc" font-size="13" text-anchor="middle">C</text>
+            <text x="400" y="200" fill="#f4c97a" font-size="11" text-anchor="middle">2.23%</text>
+          </g>
+          <g>
+            <rect x="490" y="208" width="60" height="112" fill="#e57373" rx="2"/>
+            <line x1="520" y1="194" x2="520" y2="232" stroke="#fff" stroke-width="1.5"/>
+            <text x="520" y="340" fill="#d8d8dc" font-size="13" text-anchor="middle">D</text>
+            <text x="520" y="188" fill="#e57373" font-size="11" text-anchor="middle">2.73%</text>
+          </g>
+          <g>
+            <rect x="610" y="287" width="60" height="33" fill="#8a93a6" rx="2"/>
+            <line x1="640" y1="278" x2="640" y2="298" stroke="#fff" stroke-width="1.5"/>
+            <text x="640" y="340" fill="#d8d8dc" font-size="13" text-anchor="middle">E</text>
+            <text x="640" y="275" fill="#c2c8d4" font-size="11" text-anchor="middle">0.90%</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span class="item"><span class="sw" style="background: #5a6275;"></span> A · Control</span>
+        <span class="item"><span class="sw" style="background: #6ea8e0;"></span> B · Color</span>
+        <span class="item"><span class="sw" style="background: #f4c97a;"></span> C · Color+Suit</span>
+        <span class="item"><span class="sw" style="background: #e57373;"></span> D · Full</span>
+        <span class="item"><span class="sw" style="background: #8a93a6;"></span> E · Placebo</span>
+      </div>
+      <div class="annot">
+        <strong>읽는 법:</strong>
+        <strong>막대 높이</strong> = arm별 hit rate (target을 정확히 맞힌 비율).
+        <strong>흰 에러바</strong> = Wilson 95% CI — 같은 모집단에서 표본을 다시 뽑아도 이 범위 안에 들어갈 확률 95%.
+        <strong>붉은 점선</strong> = uniform random baseline (1/52 ≈ 1.9%). 막대가 이 선보다 위면 random보다 강한 신호, 아래면 약한 신호.
+        D(2.73%)는 random 대비 ~1.4배, A 대비 ~4.6배.
+      </div>
+    </section>
+
+    <!-- 24. 요약 표 -->
+    <section>
+      <span class="corner-mark">22 · Summary</span>
+      <h2>요약 표</h2>
+      <table style="margin-top: 14px; font-size: 0.72em;">
+        <tr>
+          <th>가설</th><th>예측</th><th>결과</th><th>증거</th><th>판정</th>
+        </tr>
+        <tr>
+          <td><strong>H1</strong></td>
+          <td>Keyword priming → lift</td>
+          <td>D 0.60 → 2.73%</td>
+          <td>p = 2.1×10⁻¹⁰, V=0.082</td>
+          <td class="green"><strong>지지 ★★★</strong></td>
+        </tr>
+        <tr>
+          <td><strong>H2</strong></td>
+          <td>B &lt; C &lt; D 단조 증가</td>
+          <td>1.90 &lt; 2.23 &lt; 2.73%</td>
+          <td>3단계 모두 유의</td>
+          <td class="green"><strong>지지 ★★★</strong></td>
+        </tr>
+        <tr>
+          <td><strong>H3</strong></td>
+          <td>Placebo ns</td>
+          <td>E vs A p = 0.231</td>
+          <td>의미적 가까움만 효과</td>
+          <td class="green"><strong>지지 ✓</strong></td>
+        </tr>
+      </table>
+      <p style="margin-top: 20px; font-size: 0.7em;">
+        <strong class="gold">3가지 가설 모두 강하게 지지됨.</strong> "벡터 유사도 기반 키워드 프라이밍으로 LLM 페르소나의 카드 연상 유도" 검증 완료.
+      </p>
+    </section>
+
+    <!-- 25. 의미와 한계 -->
+    <section>
+      <span class="corner-mark">23 · Implications</span>
+      <h2>의미와 한계</h2>
+      <div class="two-col" style="margin-top: 14px;">
+        <div style="text-align: left; font-size: 0.7em;">
+          <p class="label-strong green">의미 (Contribution)</p>
+          <ul class="compact">
+            <li>LLM에서 vector-aligned 프라이밍 효과 <strong>정량화</strong></li>
+            <li>5-arm Ablation으로 baseline·placebo 명확 분리</li>
+            <li>Cramér's V로 effect size 측정 (small but robust)</li>
+            <li>재현 가능한 pipeline + parquet 데이터</li>
+            <li>Open-source 공개 (GitHub)</li>
+          </ul>
+          <p class="label-strong green" style="margin-top: 14px;">학술·실무적 시사점</p>
+          <ul class="tight xsmall">
+            <li>LLM의 응답이 "의미적 인접 자극"에 영향받음을 통계적으로 입증</li>
+            <li>Prompt engineering의 priming 메커니즘 정량 분석 도구 제공</li>
+            <li>인간 priming 실험의 가설 후보를 LLM으로 미리 screening 가능</li>
+          </ul>
+        </div>
+        <div style="text-align: left; font-size: 0.7em;">
+          <p class="label-strong red">한계 (Limitations)</p>
+          <ul class="compact">
+            <li>LLM (GPT-4o) 한정 — 인간 일반화 불명</li>
+            <li>Effect size 0.082 (small) — 큰 lift는 아님</li>
+            <li>Per-archetype/mood breakdown은 더 큰 n 필요</li>
+            <li>Calibration 1,000 trials는 페르소나당 10회로 노이즈 가능</li>
+            <li>한국어만 검증</li>
+          </ul>
+          <p class="label-strong red" style="margin-top: 14px;">외부 타당도 위협</p>
+          <ul class="tight xsmall">
+            <li>LLM의 학습 데이터 분포에 의존 — 모델 업데이트 시 결과 변동 가능</li>
+            <li>실제 마술 무대(인간 관객)에 직접 적용 불가</li>
+            <li>"hit rate"는 single-shot 측정 — 멀티턴 대화 priming은 미검증</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 26. 향후 연구 -->
+    <section>
+      <span class="corner-mark">24 · Future Work</span>
+      <h2>향후 연구 · 참고 문헌</h2>
+      <div style="text-align: left; max-width: 820px; margin: 14px auto; font-size: 0.65em;">
+        <p class="label-strong">향후 연구</p>
+        <ul class="compact" style="line-height: 1.7;">
+          <li>Full scale (n=100/arm, 50K trials): per-archetype × mood × MBTI breakdown</li>
+          <li>교차 모델 검증: Claude / Gemini / Llama 페르소나 비교</li>
+          <li>다국어 일반화: 영어·일본어 키워드 priming 효과</li>
+          <li>인간 실험: 동일 키워드 priming을 인간 피험자에 적용 → LLM–Human gap 측정</li>
+          <li>실시간 priming: 페르소나 대화 turn 안에서 dynamic priming 효과</li>
+          <li>Adversarial: priming 저항이 강한 페르소나 메타 조합 탐색</li>
+        </ul>
+        <p class="label-strong" style="margin-top: 16px;">참고 문헌</p>
+        <ul class="compact" style="line-height: 1.7;">
+          <li>Pailhès &amp; Kuhn (2020). <em>Mental forcing in conjuring magic</em>. Cognitive Research.</li>
+          <li>Rensink &amp; Wiseman (2012). <em>Magic and the brain</em>. Conscious. Cogn.</li>
+          <li>Kubovy &amp; Psotka (1976). <em>Predominance of seven</em>. JEP: Human Perception.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 27. Q&A -->
+    <section class="cover">
+      <div class="suits"><span class="suit-red">♥</span> <span>♠</span> <span class="suit-red">♦</span> <span>♣</span></div>
+      <h1 style="margin-top: 14px;">감사합니다</h1>
+      <p style="font-size: 0.78em; color: var(--accent-gold); margin: 10px 0;">Q &amp; A</p>
+
+      <div class="quote" style="font-size: 0.85em; max-width: 920px; margin: 16px auto;">
+        "벡터 유사도 기반 키워드 프라이밍으로<br>
+        LLM 페르소나의 카드 연상을 <span class="gold">통계적으로 유의미하게 유도</span>할 수 있다."
+      </div>
+
+      <div class="three-col" style="margin-top: 16px; max-width: 1080px; margin-left: auto; margin-right: auto;">
+        <div class="stat-card" style="border-left-color: var(--accent-green);">
+          <div class="label">Take-home #1</div>
+          <div style="font-size: 0.78em; margin-top: 6px;" class="green">키워드 priming의 lift</div>
+          <div class="xsmall muted" style="margin-top: 4px;">D vs A: +2.13p (★★★)</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-gold);">
+          <div class="label">Take-home #2</div>
+          <div style="font-size: 0.78em; margin-top: 6px;" class="gold">단계적 누적 효과</div>
+          <div class="xsmall muted" style="margin-top: 4px;">B &lt; C &lt; D 단조 증가</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--accent-blue);">
+          <div class="label">Take-home #3</div>
+          <div style="font-size: 0.78em; margin-top: 6px;" class="blue">의미 분리 검증</div>
+          <div class="xsmall muted" style="margin-top: 4px;">Placebo ns로 텍스트 효과 배제</div>
+        </div>
+      </div>
+
+      <div class="author-block" style="margin-top: 20px;">
+        <div class="name">손재완</div>
+        <div class="affil">연세대학교 융합인문공학과</div>
+      </div>
+      <div style="margin-top: 16px; font-size: 0.72em;">
+        <p>GitHub: <a href="https://github.com/wukong-daima/A-PMFS" style="color: var(--accent-blue);">github.com/wukong-daima/A-PMFS</a></p>
+        <p class="xsmall muted" style="margin-top: 6px;">코드 · 데이터 · 발표 자료 · 분석 리포트 자유 열람 가능</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  controls: true,
+  progress: true,
+  slideNumber: 'c/t',
+  width: 1920,
+  height: 1080,
+  margin: 0.05,
+  minScale: 0.2,
+  maxScale: 2.0,
+  center: true,
+  transition: 'slide',
+  backgroundTransition: 'fade',
+  plugins: [ RevealHighlight, RevealNotes ]
+});
+</script>
+</body>
+</html>
