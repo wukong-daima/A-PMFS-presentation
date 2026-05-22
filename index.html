@@ -30,8 +30,28 @@
     --accent-green: #81c784;
     --border-subtle: #2a3142;
   }
-  html, body { background: var(--bg-deep); }
-  .reveal { font-family: var(--r-main-font); font-size: 38px; color: var(--r-main-color); }
+  html, body { background: var(--bg-deep); height: 100%; }
+  /*
+   * Typography Spec (대형 화면 발표용)
+   *  - 캔버스: 1920×1080 (16:9), reveal margin 0
+   *  - 슬라이드 padding: 사방 ~5% (96px 좌우 / 54px 상하)
+   *  - 본문 base: 28px → li/p가 1.0em = 28px (≥24px 충족)
+   *  - h1 70px (2.5em) · h2 44px (1.6em) · h3 30px (1.07em)
+   *  - 표/캡션 22–24px (≥18px 충족)
+   */
+  .reveal { font-family: var(--r-main-font); font-size: 28px; color: var(--r-main-color); }
+  .reveal .slides { width: 100% !important; height: 100% !important; }
+  .reveal .slides > section, .reveal .slides > section > section {
+    width: 100% !important; height: 100% !important;
+    padding: 54px 96px !important;
+    box-sizing: border-box !important;
+    top: 0 !important; left: 0 !important; transform: none !important;
+    display: flex !important; flex-direction: column !important; justify-content: center !important;
+    overflow: hidden !important;
+  }
+  .reveal .slides > section.cover, .reveal .slides > section.present.cover {
+    justify-content: center !important; align-items: center !important; text-align: center;
+  }
   .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
     font-family: var(--r-heading-font);
     font-weight: 700;
@@ -39,17 +59,20 @@
     letter-spacing: -0.025em;
     color: var(--r-heading-color);
   }
-  .reveal h1 { font-size: 1.9em; line-height: 1.1; }
+  .reveal h1 { font-size: 2.5em; line-height: 1.05; margin: 0 0 0.2em; }   /* 70px */
   .reveal h2 {
-    font-size: 1.35em;
+    font-size: 1.6em;                                                       /* ≈45px */
     color: var(--accent-gold);
-    margin-bottom: 0.3em;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid var(--border-subtle);
+    margin: 0 0 0.4em;
+    padding-bottom: 0.25em;
+    border-bottom: 2px solid var(--border-subtle);
+    font-weight: 800;
+    flex-shrink: 0;
   }
-  .reveal h3 { font-size: 1.0em; color: var(--accent-blue); margin-top: 0.5em; }
+  .reveal h3 { font-size: 1.1em; color: var(--accent-blue); margin-top: 0.4em; font-weight: 700; }
   .reveal p, .reveal li { line-height: 1.55; }
-  .subtitle { color: #8a93a6; font-size: 0.75em; margin-top: -0.3em; }
+  .reveal strong { font-weight: 700; }
+  .subtitle { color: #8a93a6; font-size: 1.4em; margin-top: 4px; font-weight: 500; }
   .author-block {
     margin-top: 28px;
     padding: 16px 22px;
@@ -58,86 +81,95 @@
     display: inline-block;
     text-align: left;
   }
-  .author-block .name { font-size: 0.85em; color: var(--r-heading-color); font-weight: 600; }
-  .author-block .affil { font-size: 0.65em; color: #aab1c0; margin-top: 4px; font-family: var(--r-serif-font); font-style: italic; }
-  .suits { font-size: 1.6em; letter-spacing: 0.35em; opacity: 0.85; }
+  .author-block .name { font-size: 1.05em; color: var(--r-heading-color); font-weight: 600; }
+  .author-block .affil { font-size: 1.05em; color: #aab1c0; margin-top: 4px; font-family: var(--r-serif-font); font-style: italic; }
+  .suits { font-size: 2.2em; letter-spacing: 0.35em; opacity: 0.85; line-height: 1.5; }
   .suit-red { color: #e57373; }
   .red { color: var(--accent-red); }
   .gold { color: var(--accent-gold); }
   .blue { color: var(--accent-blue); }
   .green { color: var(--accent-green); }
   .muted { color: #8a93a6; }
-  .small { font-size: 0.75em; color: #aab1c0; }
-  .xsmall { font-size: 0.65em; color: #8a93a6; }
+  .small { font-size: 1.05em; color: #aab1c0; }
+  .xsmall { font-size: 1.0em; color: #8a93a6; }
+
+  /* 핵심 키워드 하이라이트 */
+  .hl {
+    background: linear-gradient(180deg, transparent 60%, rgba(244,201,122,0.30) 60%);
+    color: var(--r-heading-color);
+    font-weight: 700;
+    padding: 0 2px;
+  }
+  .hl-blue { background: linear-gradient(180deg, transparent 60%, rgba(110,168,224,0.30) 60%); color: var(--r-heading-color); font-weight: 700; padding: 0 2px; }
 
   .badge {
-    display: inline-block; padding: 2px 9px; border-radius: 999px;
-    background: var(--accent-gold); color: #1a1a1a; font-weight: 700; font-size: 0.72em;
-    margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em;
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    background: var(--accent-gold); color: #1a1a1a; font-weight: 700; font-size: 1.0em;
+    margin-left: 8px; vertical-align: middle; letter-spacing: 0.05em;
   }
 
-  .reveal table { font-size: 0.72em; margin: 0 auto; border-collapse: collapse; background: var(--bg-elev); border-radius: 8px; overflow: hidden; }
+  .reveal table { font-size: 1.0em; margin: 0 auto; border-collapse: collapse; background: var(--bg-elev); border-radius: 10px; overflow: hidden; width: 100%; }
   .reveal table th {
     background: var(--bg-elev2); color: var(--accent-gold);
     border-bottom: 1px solid var(--border-subtle);
-    padding: 8px 14px; font-weight: 600; text-align: left;
+    padding: 12px 18px; font-weight: 700; text-align: left;
   }
-  .reveal table td { border-bottom: 1px solid var(--border-subtle); padding: 7px 14px; }
+  .reveal table td { border-bottom: 1px solid var(--border-subtle); padding: 11px 18px; }
   .reveal table tr:last-child td { border-bottom: none; }
   .reveal table tr:hover td { background: rgba(244,201,122,0.04); }
 
-  .reveal pre { box-shadow: none; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 8px; }
-  .reveal pre code { padding: 16px 20px; font-size: 0.78em; line-height: 1.6; }
+  .reveal pre { box-shadow: none; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 10px; width: 100%; }
+  .reveal pre code { padding: 18px 22px; font-size: 1.0em; line-height: 1.55; }   /* ≈22px */
 
-  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 18px; }
   .stat-card {
-    background: var(--bg-elev); border-left: 3px solid var(--accent-gold);
-    padding: 14px 16px; border-radius: 6px;
+    background: var(--bg-elev); border-left: 4px solid var(--accent-gold);
+    padding: 18px 22px; border-radius: 8px;
   }
-  .stat-card .label { font-size: 0.68em; color: #8a93a6; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; }
-  .stat-card .value { font-size: 1.1em; font-weight: 700; color: var(--accent-gold); margin-top: 4px; }
+  .stat-card .label { font-size: 1.0em; color: #8a93a6; text-transform: uppercase; letter-spacing: 0.10em; font-weight: 600; }
+  .stat-card .value { font-size: 1.4em; font-weight: 800; color: var(--accent-gold); margin-top: 6px; line-height: 1.2; }
 
   .pipeline {
-    display: flex; justify-content: space-between; margin-top: 22px; gap: 8px;
+    display: flex; justify-content: space-between; margin-top: 22px; gap: 12px;
   }
   .pipeline .step {
-    flex: 1; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 8px;
-    padding: 12px 8px; text-align: center; font-size: 0.72em;
+    flex: 1; background: var(--bg-elev); border: 1px solid var(--border-subtle); border-radius: 10px;
+    padding: 18px 14px; text-align: center; font-size: 0.92em; line-height: 1.45;
   }
-  .pipeline .step .num { color: var(--accent-gold); font-size: 1.3em; font-weight: 700; }
-  .pipeline .arrow { display: flex; align-items: center; color: var(--accent-gold); font-size: 1.3em; }
+  .pipeline .step .num { color: var(--accent-gold); font-size: 1.5em; font-weight: 800; display: block; margin-bottom: 4px; }
+  .pipeline .arrow { display: flex; align-items: center; color: var(--accent-gold); font-size: 1.5em; font-weight: 700; }
 
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
 
   .quote {
-    border-left: 3px solid var(--accent-gold);
-    padding: 14px 22px;
+    border-left: 4px solid var(--accent-gold);
+    padding: 18px 28px;
     background: rgba(244,201,122,0.05);
     color: #d8d8dc;
-    margin: 18px 0;
-    font-size: 0.78em;
+    margin: 14px 0;
+    font-size: 1.15em;
     font-family: var(--r-serif-font);
     font-style: italic;
-    line-height: 1.6;
+    line-height: 1.55;
   }
 
   .key-finding {
     background: linear-gradient(135deg, var(--bg-elev), rgba(229,115,115,0.08));
     border: 1px solid rgba(229,115,115,0.4);
-    border-radius: 10px; padding: 14px 22px; margin: 16px 0;
-    font-size: 0.78em;
+    border-radius: 12px; padding: 18px 26px; margin: 12px 0;
+    font-size: 1.0em;
   }
-  .key-finding strong { color: var(--accent-gold); }
+  .key-finding strong { color: var(--accent-gold); font-weight: 800; }
 
   .glossary {
     background: var(--bg-elev);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-top: 22px;
+    border-radius: 10px;
+    padding: 20px 26px;
+    margin-top: 14px;
     text-align: left;
-    font-size: 0.65em;
+    font-size: 0.92em;
   }
   .glossary h4 {
     color: var(--accent-blue);
@@ -152,11 +184,11 @@
   .glossary dt:first-of-type { margin-top: 0; }
   .glossary dd { margin: 3px 0 0 0; color: #c2c8d4; line-height: 1.5; }
 
-  .reveal .progress { color: var(--accent-gold); height: 3px; }
+  .reveal .progress { color: var(--accent-gold); height: 4px; }
 
   .footer {
     position: fixed; bottom: 14px; left: 24px; right: 24px;
-    font-size: 0.65em; color: #5a6275; z-index: 10;
+    font-size: 14px; color: #5a6275; z-index: 10;
     display: flex; justify-content: space-between; pointer-events: none;
   }
   .footer span { pointer-events: auto; }
@@ -165,46 +197,48 @@
   .formula {
     font-family: var(--r-code-font);
     background: var(--bg-elev); padding: 8px 14px; border-radius: 6px;
-    display: inline-block; color: var(--accent-blue); font-size: 0.85em;
+    display: inline-block; color: var(--accent-blue); font-size: 1.05em;
   }
-  ul.compact li { margin: 3px 0; }
-  ul.tight li { margin: 1px 0; }
+  ul.compact li { margin: 6px 0; }
+  ul.tight li { margin: 3px 0; }
 
   .annot {
     background: var(--bg-elev);
-    border-left: 3px solid var(--accent-blue);
-    padding: 12px 18px;
+    border-left: 4px solid var(--accent-blue);
+    padding: 14px 22px;
     margin: 14px 0 0;
-    font-size: 0.7em;
+    font-size: 1.0em;
     color: #c2c8d4;
     text-align: left;
-    border-radius: 0 6px 6px 0;
-    line-height: 1.6;
+    border-radius: 0 8px 8px 0;
+    line-height: 1.55;
   }
-  .annot strong { color: var(--accent-blue); }
+  .annot strong { color: var(--accent-blue); font-weight: 700; }
 
   .legend {
-    display: flex; gap: 18px; justify-content: center; margin-top: 10px;
-    font-size: 0.7em; color: #8a93a6;
+    display: flex; gap: 24px; justify-content: center; margin-top: 12px;
+    font-size: 1.0em; color: #8a93a6;
   }
-  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
-  .legend .sw { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  .legend .item { display: inline-flex; align-items: center; gap: 8px; }
+  .legend .sw { width: 18px; height: 12px; border-radius: 2px; display: inline-block; }
 
   .corner-mark {
     position: absolute;
-    top: 18px; right: 26px;
-    font-size: 0.65em;
+    top: 22px; left: 30px;
+    font-size: 1.0em;
     color: #5a6275;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    font-weight: 600;
   }
 
   .label-strong {
-    font-size: 0.72em;
+    font-size: 1.05em;
     color: var(--accent-gold);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
+    margin: 0 0 8px;
   }
 
   .divider { height: 1px; background: var(--border-subtle); margin: 14px 0; }
@@ -216,7 +250,7 @@
   }
   .cover .meta {
     margin-top: 30px;
-    font-size: 0.72em;
+    font-size: 0.9em;
     color: #8a93a6;
     letter-spacing: 0.15em;
   }
@@ -234,37 +268,22 @@
     <!-- 1. Cover -->
     <section class="cover">
       <div class="suits"><span class="suit-red">♥</span> <span>♠</span> <span class="suit-red">♦</span> <span>♣</span></div>
-      <h1 style="margin-top: 16px;">A-PMFS</h1>
-      <p class="subtitle" style="font-size: 0.78em; color: var(--accent-gold); margin: 6px 0 4px; letter-spacing: 0.05em;">
+      <h1 style="margin-top: 24px; font-size: 3.0em;">A-PMFS</h1>
+      <p class="subtitle" style="margin: 8px 0 0; color: var(--accent-gold);">
         AI Persona Mental Forcing Simulator
       </p>
-      <p style="font-size: 0.72em; color: #aab1c0; max-width: 780px; margin: 0 auto;">
-        벡터 유사도 기반 키워드 프라이밍이 LLM 페르소나의 카드 선택을<br>통제할 수 있는가에 대한 통계적 검증
+      <p style="font-size: 1.0em; color: #aab1c0; margin: 24px auto 0; max-width: 70%; line-height: 1.55;">
+        <span class="hl">벡터 유사도 기반 키워드 프라이밍</span>이 LLM 페르소나의 카드 선택을<br>통제할 수 있는가에 대한 <span class="hl-blue">통계적 검증</span>
       </p>
 
-      <div style="margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; font-size: 0.62em;">
-        <span style="padding: 4px 14px; background: rgba(244,201,122,0.12); border: 1px solid rgba(244,201,122,0.4); border-radius: 999px; color: var(--accent-gold);">#LLM Priming</span>
-        <span style="padding: 4px 14px; background: rgba(110,168,224,0.12); border: 1px solid rgba(110,168,224,0.4); border-radius: 999px; color: var(--accent-blue);">#Vector Similarity</span>
-        <span style="padding: 4px 14px; background: rgba(129,199,132,0.12); border: 1px solid rgba(129,199,132,0.4); border-radius: 999px; color: var(--accent-green);">#5-arm Ablation</span>
-        <span style="padding: 4px 14px; background: rgba(229,115,115,0.12); border: 1px solid rgba(229,115,115,0.4); border-radius: 999px; color: var(--accent-red);">#Mentalism</span>
+      <div style="margin-top: 36px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 0.85em;">
+        <span style="padding: 8px 20px; background: rgba(244,201,122,0.12); border: 1px solid rgba(244,201,122,0.4); border-radius: 999px; color: var(--accent-gold); font-weight: 600;">#LLM Priming</span>
+        <span style="padding: 8px 20px; background: rgba(110,168,224,0.12); border: 1px solid rgba(110,168,224,0.4); border-radius: 999px; color: var(--accent-blue); font-weight: 600;">#Vector Similarity</span>
+        <span style="padding: 8px 20px; background: rgba(129,199,132,0.12); border: 1px solid rgba(129,199,132,0.4); border-radius: 999px; color: var(--accent-green); font-weight: 600;">#5-arm Ablation</span>
+        <span style="padding: 8px 20px; background: rgba(229,115,115,0.12); border: 1px solid rgba(229,115,115,0.4); border-radius: 999px; color: var(--accent-red); font-weight: 600;">#Mentalism</span>
       </div>
 
-      <div class="three-col" style="margin-top: 22px; max-width: 920px; margin-left: auto; margin-right: auto;">
-        <div class="stat-card" style="border-left-color: var(--accent-gold); text-align: left;">
-          <div class="label">규모</div>
-          <div style="font-size: 0.78em; margin-top: 4px;" class="gold">100 페르소나 × 15,000 trials</div>
-        </div>
-        <div class="stat-card" style="border-left-color: var(--accent-red); text-align: left;">
-          <div class="label">핵심 결과</div>
-          <div style="font-size: 0.78em; margin-top: 4px;" class="red">D vs A · p = 2.1×10⁻¹⁰</div>
-        </div>
-        <div class="stat-card" style="border-left-color: var(--accent-green); text-align: left;">
-          <div class="label">3가지 가설 모두</div>
-          <div style="font-size: 0.78em; margin-top: 4px;" class="green">★★★ 강하게 지지</div>
-        </div>
-      </div>
-
-      <div class="author-block" style="margin-top: 22px;">
+      <div class="author-block" style="margin-top: 44px;">
         <div class="name">손재완</div>
         <div class="affil">연세대학교 융합인문공학과</div>
       </div>
@@ -274,7 +293,7 @@
     <section>
       <span class="corner-mark">Contents</span>
       <h2>목차</h2>
-      <div style="text-align: left; max-width: 820px; margin: 18px auto; font-size: 0.72em; column-count: 2; column-gap: 32px; line-height: 1.9;">
+      <div style="text-align: left; width: 100%; margin: 18px 0; font-size: 1.0em; column-count: 3; column-gap: 40px; line-height: 1.7;">
         <ol>
           <li>연구 배경 — chae-acaan 회고</li>
           <li>새로운 질문</li>
@@ -310,7 +329,7 @@
       <span class="corner-mark">01 · Background</span>
       <h2>연구 배경 — chae-acaan</h2>
       <div class="two-col" style="margin-top: 14px;">
-        <div style="font-size: 0.72em; text-align: left;">
+        <div style="font-size: 1.05em; text-align: left;">
           <p class="label-strong">선행 발견</p>
           <ul class="compact">
             <li>GPT-4o-mini, 52,089건 시뮬레이션</li>
@@ -347,30 +366,30 @@
     <section>
       <span class="corner-mark">02 · Research Question</span>
       <h2>새로운 질문</h2>
-      <div class="quote" style="font-size: 0.95em; max-width: 920px; margin: 24px auto;">
+      <div class="quote" style="font-size: 1.05em; width: 100%; margin: 24px 0;">
         "자연 편향이 그토록 강하다면 —<br>
-        <span class="gold">프라이밍으로 그 편향을 깨고</span><br>
+        <span class="hl">프라이밍으로 그 편향을 깨고</span><br>
         <span class="red">자연 선호 외 카드도 유도</span>할 수 있을까?"
       </div>
       <div class="three-col" style="margin-top: 22px;">
         <div class="stat-card" style="border-left-color: var(--accent-blue);">
           <div class="label">선행 연구 (chae-acaan)</div>
-          <div style="font-size: 0.72em; margin-top: 6px;">"AI가 무엇을 선호하는가?"</div>
+          <div style="font-size: 1.05em; margin-top: 6px;">"AI가 무엇을 선호하는가?"</div>
           <div class="xsmall muted" style="margin-top: 4px;">자연 분포 측정</div>
         </div>
         <div class="stat-card" style="border-left-color: var(--accent-gold);">
           <div class="label">본 연구 (A-PMFS)</div>
-          <div style="font-size: 0.72em; margin-top: 6px;" class="gold">"AI를 어디로 유도할 수 있는가?"</div>
+          <div style="font-size: 1.05em; margin-top: 6px;" class="gold">"AI를 어디로 유도할 수 있는가?"</div>
           <div class="xsmall muted" style="margin-top: 4px;">처치 효과 검증</div>
         </div>
         <div class="stat-card" style="border-left-color: var(--accent-green);">
           <div class="label">최종 목표</div>
-          <div style="font-size: 0.72em; margin-top: 6px;" class="green">"왜 유도되는가?"</div>
+          <div style="font-size: 1.05em; margin-top: 6px;" class="green">"왜 유도되는가?"</div>
           <div class="xsmall muted" style="margin-top: 4px;">메커니즘 규명</div>
         </div>
       </div>
       <div class="annot" style="margin-top: 18px;">
-        <strong>관찰 → 조작 → 인과:</strong> 선행 연구는 LLM의 자연 편향(♥7 95%+)을 발견했지만, <em>그 편향을 의도적으로 바꿀 수 있는가</em>는 미답. 본 연구는 priming이라는 처치 변수를 도입해 인과 추론으로 나아갑니다. Darren Brown의 멘탈리즘 메커니즘을 LLM 환경에서 재현 가능한지가 핵심.
+        <strong>관찰 → 조작 → 인과:</strong> 선행 연구는 LLM의 자연 편향(♥7 95%+)을 발견했지만, <em>그 편향을 의도적으로 바꿀 수 있는가</em>는 미답. 본 연구는 <span class="hl">Priming</span>이라는 처치 변수를 도입해 인과 추론으로 나아갑니다. Darren Brown의 <span class="hl">Mental Forcing</span> 메커니즘을 LLM 환경에서 재현 가능한지가 핵심.
       </div>
     </section>
 
@@ -378,18 +397,18 @@
     <section>
       <span class="corner-mark">03 · Hypothesis</span>
       <h2>핵심 가설</h2>
-      <div style="text-align: left; max-width: 880px; margin: 14px auto;">
+      <div style="text-align: left; width: 100%; margin: 14px 0;">
         <div class="key-finding">
-          <strong class="gold">H1.</strong> Target 카드와 <span class="blue">벡터 유사도가 가까운 한국어 키워드 프라이밍</span>이
+          <strong class="gold">H1.</strong> Target 카드와 <span class="hl">벡터 유사도</span>가 가까운 한국어 <span class="hl">키워드 프라이밍</span>이
           LLM 페르소나의 카드 선택을 baseline 대비 유의미하게 lift시킨다.
         </div>
         <div class="key-finding" style="border-color: rgba(110,168,224,0.4); background: linear-gradient(135deg, var(--bg-elev), rgba(110,168,224,0.08));">
-          <strong class="blue">H2.</strong> 프라이밍은 <span class="gold">단계적(color → suit → full)</span>으로 누적되며,
+          <strong class="blue">H2.</strong> 프라이밍은 <span class="hl">단계적(color → suit → full)</span>으로 누적되며,
           hit rate는 단조 증가 패턴을 보인다.
         </div>
         <div class="key-finding" style="border-color: rgba(129,199,132,0.4); background: linear-gradient(135deg, var(--bg-elev), rgba(129,199,132,0.08));">
-          <strong class="green">H3.</strong> Placebo (의미적 무관 프라이밍)는 <span class="red">lift 효과를 만들지 못한다</span> —
-          효과는 단순 "텍스트 노출"이 아닌 "의미적 가까움" 때문이다.
+          <strong class="green">H3.</strong> <span class="hl-blue">Placebo</span> (의미적 무관 프라이밍)는 <span class="red">lift 효과를 만들지 못한다</span> —
+          효과는 단순 "텍스트 노출"이 아닌 <span class="hl">의미적 가까움</span> 때문이다.
         </div>
       </div>
     </section>
@@ -405,7 +424,7 @@
             <dt>ACAAN</dt>
             <dd><em>Any Card At Any Number</em> — 관객이 지정한 카드가 지정한 위치에서 나오는 멘탈리즘의 대표 효과.</dd>
             <dt>Mental Forcing</dt>
-            <dd>관객이 자유롭게 선택했다고 믿게 하면서 마술사가 카드를 유도하는 기술.</dd>
+            <dd>관객이 자유롭게 선택했다고 믿게 하면서 마술사가 <span class="hl">카드를 유도</span>하는 기술.</dd>
             <dt>Priming (프라이밍)</dt>
             <dd>먼저 접한 자극이 후속 판단·반응에 무의식적으로 영향을 주는 심리 현상.</dd>
             <dt>Darren Brown 3-level</dt>
@@ -418,7 +437,7 @@
             <dt>Embedding</dt>
             <dd>텍스트를 의미를 보존하는 고차원 실수 벡터(예: 3072차원)로 변환.</dd>
             <dt>Cosine similarity</dt>
-            <dd>두 벡터 사이의 각도로 의미적 가까움을 측정 (−1 ≤ sim ≤ 1).</dd>
+            <dd>두 벡터 사이의 각도로 <span class="hl">의미적 가까움</span>을 측정 (−1 ≤ sim ≤ 1).</dd>
             <dt>Ablation</dt>
             <dd>구성 요소를 단계적으로 추가/제거하며 효과를 분리 측정.</dd>
             <dt>χ² (chi-square)</dt>
@@ -437,7 +456,7 @@
       <span class="corner-mark">05 · Design</span>
       <h2>5-arm Ablation 설계</h2>
       <div class="annot" style="margin-top: 8px; margin-bottom: 14px;">
-        <strong>"Arm"이란?</strong> <em>Treatment Arm</em>의 줄임 — 임상시험·실험설계에서 동일 모집단을 서로 다른 처치 조건에 배정하는 그룹을 가리키는 표준 용어. 5-arm은 5개의 비교 그룹을 의미합니다.
+        <strong>"Arm"이란?</strong> <em>Treatment Arm</em>의 줄임 — 임상시험·실험설계에서 동일 모집단을 서로 다른 처치 조건에 배정하는 그룹을 가리키는 표준 용어. <span class="hl-blue">5-arm Ablation</span>은 5개의 비교 그룹을 의미합니다.
       </div>
       <table style="margin-top: 8px;">
         <tr><th>Arm</th><th>이름</th><th>처치</th><th>목적</th></tr>
@@ -457,7 +476,7 @@
       <span class="corner-mark">06 · Persona</span>
       <h2>페르소나 설계 — 10+ 메타 정보</h2>
       <div class="two-col">
-        <table style="font-size: 0.72em;">
+        <table style="font-size: 0.85em;">
           <tr><th style="width: 32%;">필드</th><th>전체 값</th></tr>
           <tr><td><code>gender</code></td><td>남 · 여</td></tr>
           <tr><td><code>age_group</code></td><td>10대 · 20대 · 30대 · 40대 · 50대 · 60대이상</td></tr>
@@ -470,7 +489,7 @@
           <tr><td><code>mbti</code></td><td>16종 (ENTP · ENFP · ESTP · ESFP · INTJ · INTP · INFJ · INFP · ENTJ · ENFJ · ESTJ · ESFJ · ISTJ · ISFJ · ISTP · ISFP) → 10 archetype 매핑</td></tr>
           <tr><td><code>name · hobby · speech_quirk</code></td><td>자유 텍스트</td></tr>
         </table>
-        <div style="font-size: 0.65em; text-align: left;">
+        <div style="font-size: 0.92em; text-align: left;">
           <p class="label-strong">분포 강제 주입</p>
           <ul class="compact">
             <li>코드에서 deterministic 분배</li>
@@ -499,8 +518,8 @@
     <section>
       <span class="corner-mark">07 · Target Design</span>
       <h2>Unfavored Target 선정</h2>
-      <p style="font-size: 0.7em; color: #d8d8dc; max-width: 820px; margin: 12px auto;">
-        <strong class="red">문제:</strong> 자연 Top-1 target은 baseline이 너무 높아(<span class="red">44%</span>) 프라이밍 효과 측정 불가
+      <p style="font-size: 1.05em; color: #d8d8dc; width: 100%; margin: 12px 0;">
+        <strong class="red">문제:</strong> 자연 Top-1 target은 baseline이 너무 높아(<span class="red">44%</span>) <span class="hl">프라이밍 효과 측정 불가</span>
       </p>
       <div class="pipeline">
         <div class="step">
@@ -580,7 +599,7 @@
       <span class="corner-mark">09 · System Spec</span>
       <h2>시스템 PRD & 스펙</h2>
       <div class="two-col" style="margin-top: 14px;">
-        <div style="font-size: 0.65em; text-align: left;">
+        <div style="font-size: 0.92em; text-align: left;">
           <p class="label-strong">목표 (Product Requirements)</p>
           <ul class="compact">
             <li>LLM 페르소나의 카드 선택에 대한 priming 효과 검증</li>
@@ -597,9 +616,9 @@
             <li>χ²·V·CI 자동 리포트</li>
           </ul>
         </div>
-        <div style="font-size: 0.65em; text-align: left;">
+        <div style="font-size: 0.92em; text-align: left;">
           <p class="label-strong">기술 스펙</p>
-          <table style="width: 100%; font-size: 0.95em;">
+          <table style="width: 100%; font-size: 1.05em;">
             <tr><td><strong>언어</strong></td><td>Python 3.11</td></tr>
             <tr><td><strong>비동기</strong></td><td>asyncio · Semaphore · ThreadPool</td></tr>
             <tr><td><strong>데이터</strong></td><td>Parquet (pandas + pyarrow)</td></tr>
@@ -715,7 +734,7 @@
           Wilson CI
         </div>
       </div>
-      <table style="margin-top: 18px; font-size: 0.7em;">
+      <table style="margin-top: 18px; font-size: 1.05em;">
         <tr><th>Stage</th><th>입력</th><th>출력</th><th>호출 수</th><th>시간 (실측)</th></tr>
         <tr><td>1 Persona</td><td>10 archetype 정의</td><td>personas.json (100명)</td><td>~100</td><td>~16분</td></tr>
         <tr><td>2 Vector</td><td>페르소나·카드 텍스트</td><td>embeddings/*.npy</td><td>152</td><td>~3초</td></tr>
@@ -733,7 +752,7 @@
     <section>
       <span class="corner-mark">12 · Embedding</span>
       <h2>Embedding & Vector 유사도</h2>
-      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.65em;">
+      <div style="text-align: left; width: 100%; margin: 14px 0; font-size: 0.92em;">
         <p class="label-strong">키워드 추출 + 정렬 메커니즘</p>
         <pre><code class="hljs">1. target_card = "다이아_7"
 2. GPT-4o-mini → 50개 한국어 키워드 후보 추출
@@ -746,7 +765,7 @@
 6. priming 스크립트로 직접 노출</code></pre>
         <p class="label-strong" style="margin-top: 16px;">왜 효과적인가</p>
         <ul class="compact">
-          <li>판단(judge) 노이즈 제거 — sim에 90% 가중치</li>
+          <li>판단(judge) 노이즈 제거 — <span class="hl">cosine similarity</span>에 90% 가중치</li>
           <li>키워드가 카드의 "의미적 좌표"를 직접 전달</li>
           <li>메타포는 의미가 우회되어 희석됨</li>
         </ul>
@@ -757,7 +776,7 @@
     <section>
       <span class="corner-mark">13 · Architecture</span>
       <h2>시뮬레이터 아키텍처</h2>
-      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.65em;">
+      <div style="text-align: left; width: 100%; margin: 14px 0; font-size: 0.92em;">
         <p class="label-strong">병렬화 + 안정성</p>
         <table style="margin-top: 8px; width: 100%; font-size: 1em;">
           <tr><th>요소</th><th>구현</th></tr>
@@ -777,7 +796,7 @@
       <span class="corner-mark">14 · Statistics</span>
       <h2>통계 검정 Framework</h2>
       <div class="two-col" style="margin-top: 14px;">
-        <div style="text-align: left; font-size: 0.7em;">
+        <div style="text-align: left; font-size: 1.05em;">
           <p class="label-strong">사용한 검정 방식</p>
           <ul class="compact" style="margin-top: 6px;">
             <li><strong class="gold">Per-arm hit rate</strong><br>+ Wilson 95% 신뢰구간</li>
@@ -786,11 +805,11 @@
             <li><strong class="gold">Omnibus χ² (5-arm)</strong><br>overall difference 검정</li>
             <li><strong class="gold">vs Uniform (1/52)</strong><br>random baseline 대비</li>
           </ul>
-          <div class="quote" style="margin-top: 14px; font-size: 0.95em; padding: 10px 16px;">
+          <div class="quote" style="margin-top: 14px; font-size: 1.05em; padding: 10px 16px;">
             유의 수준 α = 0.05<br>(★ p&lt;0.05, ★★ p&lt;0.01, ★★★ p&lt;0.001)
           </div>
         </div>
-        <div style="text-align: left; font-size: 0.65em;">
+        <div style="text-align: left; font-size: 0.92em;">
           <p class="label-strong blue">각 방식의 의미</p>
           <dl style="margin-top: 6px;">
             <dt class="gold" style="font-weight: 700;">χ² (chi-square) test</dt>
@@ -828,7 +847,7 @@
         </table>
         <div>
           <p class="label-strong">예시 priming script</p>
-          <pre style="margin-top: 4px;"><code class="hljs" style="font-size: 0.75em;">"비 오는 날, 창밖의 빨간 우산이
+          <pre style="margin-top: 4px;"><code class="hljs" style="font-size: 1.0em;">"비 오는 날, 창밖의 빨간 우산이
 나에게 소중한 기억을 상기시켜요.
 그 느낌이 사각형의 빛나는
 매력으로 변하죠.
@@ -847,7 +866,7 @@
     <section>
       <span class="corner-mark">16 · Diagnosis</span>
       <h2>진단 — 왜 효과가 없었나?</h2>
-      <div style="text-align: left; max-width: 860px; margin: 14px auto; font-size: 0.72em;">
+      <div style="text-align: left; width: 100%; margin: 14px 0; font-size: 1.05em;">
         <p class="label-strong">1. Target 선택 문제</p>
         <ul class="compact">
           <li>자연 Top-1은 baseline ≈ 44% → ceiling effect</li>
@@ -880,9 +899,9 @@
         <tr><td><strong>D (full)</strong></td><td class="gold"><strong>3.0%</strong></td><td><strong>+2.6p</strong></td><td>8.62</td><td><strong>0.0033 ★★</strong></td></tr>
         <tr><td>E (placebo)</td><td>1.6%</td><td>+1.2p</td><td>2.53</td><td>0.112 ns</td></tr>
       </table>
-      <p style="margin-top: 18px; font-size: 0.7em;">
-        <strong class="gold">Omnibus χ²(4) = 11.29, p = 0.0235 ★</strong>
-        — 가설 H1·H3 1차 검증
+      <p style="margin-top: 18px; font-size: 1.05em;">
+        <span class="hl-blue">Omnibus χ²(4) = 11.29, p = 0.0235 ★</span>
+        — 가설 H1·H3 <strong class="gold">1차 검증</strong>
       </p>
     </section>
 
@@ -900,8 +919,8 @@
         <tr><td>E</td><td>3000</td><td>0.90%</td><td>[0.6%, 1.3%]</td><td>+0.30p</td><td>0.231 ns ✓</td><td>0.015</td></tr>
       </table>
       <div class="key-finding" style="margin-top: 14px;">
-        <strong>Omnibus χ²(4) = 59.05, p = 4.6 × 10⁻¹²</strong> ★★★ —
-        모든 priming arm이 baseline 대비 매우 강하게 유의, placebo는 ns로 안전
+        <span class="hl-blue">Omnibus χ²(4) = 59.05, p = 4.6 × 10⁻¹²</span> ★★★ —
+        모든 priming arm이 baseline 대비 <span class="hl">매우 강하게 유의</span>, placebo는 ns로 안전
       </div>
     </section>
 
@@ -910,7 +929,7 @@
       <span class="corner-mark">19 · H2 Result</span>
       <h2>H2 검증 — 단조 증가 패턴</h2>
       <div style="text-align: center; margin-top: 14px;">
-        <svg viewBox="0 0 720 340" style="max-width: 820px;">
+        <svg viewBox="0 0 720 340" style="width: 100%;">
           <line x1="70" y1="290" x2="690" y2="290" stroke="#2a3142" stroke-width="2"/>
           <line x1="70" y1="40" x2="70" y2="290" stroke="#2a3142" stroke-width="2"/>
           <text x="60" y="294" fill="#8a93a6" font-size="13" text-anchor="end">0%</text>
@@ -966,7 +985,7 @@
       <div class="annot">
         <strong>읽는 법:</strong>
         막대 높이 = arm별 hit rate (target 카드를 정확히 선택한 비율).
-        <span class="gold">노란 점선</span>은 B → C → D 단조 증가 추세.
+        <span class="gold">노란 점선</span>은 B → C → D <span class="hl">단조 증가</span> 추세.
         <strong>의미:</strong> 1단계(color) → 2단계(+suit) → 3단계(+rank) 누적 priming이 hit rate를 단계적으로 끌어올림. 가설 H2 관측. 각 단계의 marginal lift는 1단계가 가장 크고(+1.30p) 추가 단계가 +0.33~0.5p씩 더해짐 — diminishing returns 패턴.
       </div>
     </section>
@@ -976,7 +995,7 @@
       <span class="corner-mark">20 · H3 Result</span>
       <h2>H3 검증 — Placebo Control</h2>
       <div class="annot" style="margin-top: 8px; margin-bottom: 14px;">
-        <strong>플라시보 검증이란?</strong> 임상시험에서 가짜 약(설탕 알약)을 진짜 약과 비교해 효과의 진정성을 검증하는 방법. 본 연구에서는 <strong>의미적으로 무관한 텍스트</strong>를 진짜 priming과 동일한 형식·길이로 노출. 만약 placebo도 효과를 보이면 "그냥 텍스트만 봐도 카드 선택이 바뀐다"는 뜻이 되어 진짜 priming의 효과를 단정할 수 없습니다.
+        <strong>플라시보 검증이란?</strong> 임상시험에서 가짜 약(설탕 알약)을 진짜 약과 비교해 효과의 진정성을 검증하는 방법. 본 연구에서는 <strong>의미적으로 무관한 텍스트</strong>를 진짜 priming과 동일한 형식·길이로 노출. 만약 <span class="hl-blue">placebo</span>도 효과를 보이면 "그냥 텍스트만 봐도 카드 선택이 바뀐다"는 뜻이 되어 진짜 priming의 효과를 단정할 수 없습니다.
       </div>
       <div class="two-col" style="margin-top: 14px;">
         <div>
@@ -991,13 +1010,13 @@
             <div class="xsmall" style="margin-top: 4px;">의미적 무관 텍스트</div>
           </div>
         </div>
-        <div style="font-size: 0.65em; text-align: left;">
+        <div style="font-size: 0.92em; text-align: left;">
           <p class="label-strong">결과의 의미</p>
           <ul class="compact">
             <li>"단순 텍스트 노출" 효과 ❌</li>
-            <li>"의미적 관련성" 효과 ✓</li>
+            <li><span class="hl">의미적 관련성</span> 효과 ✓</li>
             <li>가설 H3 강하게 지지</li>
-            <li>임상시험 placebo control과 동등한 견고함</li>
+            <li>임상시험 <span class="hl-blue">placebo control</span>과 동등한 견고함</li>
           </ul>
           <p class="label-strong" style="margin-top: 10px;">왜 ns가 좋은 결과인가</p>
           <ul class="tight xsmall">
@@ -1013,7 +1032,7 @@
       <span class="corner-mark">21 · Visualization</span>
       <h2>주요 시각화 — Hit Rate by Arm</h2>
       <div style="text-align: center;">
-        <svg viewBox="0 0 760 370" style="max-width: 880px;">
+        <svg viewBox="0 0 760 370" style="width: 100%;">
           <line x1="80" y1="320" x2="740" y2="320" stroke="#2a3142" stroke-width="2"/>
           <line x1="80" y1="40" x2="80" y2="320" stroke="#2a3142" stroke-width="2"/>
           <line x1="80" y1="248" x2="740" y2="248" stroke="#e57373" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
@@ -1077,7 +1096,7 @@
     <section>
       <span class="corner-mark">22 · Summary</span>
       <h2>요약 표</h2>
-      <table style="margin-top: 14px; font-size: 0.72em;">
+      <table style="margin-top: 14px; font-size: 1.05em;">
         <tr>
           <th>가설</th><th>예측</th><th>결과</th><th>증거</th><th>판정</th>
         </tr>
@@ -1103,8 +1122,8 @@
           <td class="green"><strong>지지 ✓</strong></td>
         </tr>
       </table>
-      <p style="margin-top: 20px; font-size: 0.7em;">
-        <strong class="gold">3가지 가설 모두 강하게 지지됨.</strong> "벡터 유사도 기반 키워드 프라이밍으로 LLM 페르소나의 카드 연상 유도" 검증 완료.
+      <p style="margin-top: 20px; font-size: 1.05em;">
+        <strong class="gold">3가지 가설 모두 강하게 지지됨.</strong> "<span class="hl">벡터 유사도</span> 기반 <span class="hl">키워드 프라이밍</span>으로 LLM 페르소나의 카드 연상 유도" <span class="hl-blue">통계적 검증</span> 완료.
       </p>
     </section>
 
@@ -1113,7 +1132,7 @@
       <span class="corner-mark">23 · Implications</span>
       <h2>의미와 한계</h2>
       <div class="two-col" style="margin-top: 14px;">
-        <div style="text-align: left; font-size: 0.7em;">
+        <div style="text-align: left; font-size: 1.05em;">
           <p class="label-strong green">의미 (Contribution)</p>
           <ul class="compact">
             <li>LLM에서 vector-aligned 프라이밍 효과 <strong>정량화</strong></li>
@@ -1129,7 +1148,7 @@
             <li>인간 priming 실험의 가설 후보를 LLM으로 미리 screening 가능</li>
           </ul>
         </div>
-        <div style="text-align: left; font-size: 0.7em;">
+        <div style="text-align: left; font-size: 1.05em;">
           <p class="label-strong red">한계 (Limitations)</p>
           <ul class="compact">
             <li>LLM (GPT-4o) 한정 — 인간 일반화 불명</li>
@@ -1152,7 +1171,7 @@
     <section>
       <span class="corner-mark">24 · Future Work</span>
       <h2>향후 연구 · 참고 문헌</h2>
-      <div style="text-align: left; max-width: 820px; margin: 14px auto; font-size: 0.65em;">
+      <div style="text-align: left; width: 100%; margin: 14px 0; font-size: 0.92em;">
         <p class="label-strong">향후 연구</p>
         <ul class="compact" style="line-height: 1.7;">
           <li>Full scale (n=100/arm, 50K trials): per-archetype × mood × MBTI breakdown</li>
@@ -1175,27 +1194,27 @@
     <section class="cover">
       <div class="suits"><span class="suit-red">♥</span> <span>♠</span> <span class="suit-red">♦</span> <span>♣</span></div>
       <h1 style="margin-top: 14px;">감사합니다</h1>
-      <p style="font-size: 0.78em; color: var(--accent-gold); margin: 10px 0;">Q &amp; A</p>
+      <p style="font-size: 1.0em; color: var(--accent-gold); margin: 10px 0;">Q &amp; A</p>
 
-      <div class="quote" style="font-size: 0.85em; max-width: 920px; margin: 16px auto;">
+      <div class="quote" style="font-size: 1.0em; width: 100%; margin: 16px 0;">
         "벡터 유사도 기반 키워드 프라이밍으로<br>
         LLM 페르소나의 카드 연상을 <span class="gold">통계적으로 유의미하게 유도</span>할 수 있다."
       </div>
 
-      <div class="three-col" style="margin-top: 16px; max-width: 1080px; margin-left: auto; margin-right: auto;">
+      <div class="three-col" style="margin-top: 16px; width: 100%;">
         <div class="stat-card" style="border-left-color: var(--accent-green);">
           <div class="label">Take-home #1</div>
-          <div style="font-size: 0.78em; margin-top: 6px;" class="green">키워드 priming의 lift</div>
+          <div style="font-size: 1.0em; margin-top: 6px;" class="green">키워드 priming의 lift</div>
           <div class="xsmall muted" style="margin-top: 4px;">D vs A: +2.13p (★★★)</div>
         </div>
         <div class="stat-card" style="border-left-color: var(--accent-gold);">
           <div class="label">Take-home #2</div>
-          <div style="font-size: 0.78em; margin-top: 6px;" class="gold">단계적 누적 효과</div>
+          <div style="font-size: 1.0em; margin-top: 6px;" class="gold">단계적 누적 효과</div>
           <div class="xsmall muted" style="margin-top: 4px;">B &lt; C &lt; D 단조 증가</div>
         </div>
         <div class="stat-card" style="border-left-color: var(--accent-blue);">
           <div class="label">Take-home #3</div>
-          <div style="font-size: 0.78em; margin-top: 6px;" class="blue">의미 분리 검증</div>
+          <div style="font-size: 1.0em; margin-top: 6px;" class="blue">의미 분리 검증</div>
           <div class="xsmall muted" style="margin-top: 4px;">Placebo ns로 텍스트 효과 배제</div>
         </div>
       </div>
@@ -1204,7 +1223,7 @@
         <div class="name">손재완</div>
         <div class="affil">연세대학교 융합인문공학과</div>
       </div>
-      <div style="margin-top: 16px; font-size: 0.72em;">
+      <div style="margin-top: 16px; font-size: 1.05em;">
         <p>GitHub: <a href="https://github.com/wukong-daima/A-PMFS" style="color: var(--accent-blue);">github.com/wukong-daima/A-PMFS</a></p>
         <p class="xsmall muted" style="margin-top: 6px;">코드 · 데이터 · 발표 자료 · 분석 리포트 자유 열람 가능</p>
       </div>
@@ -1224,10 +1243,10 @@ Reveal.initialize({
   slideNumber: 'c/t',
   width: 1920,
   height: 1080,
-  margin: 0.05,
+  margin: 0,
   minScale: 0.2,
   maxScale: 2.0,
-  center: true,
+  center: false,
   transition: 'slide',
   backgroundTransition: 'fade',
   plugins: [ RevealHighlight, RevealNotes ]
